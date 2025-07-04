@@ -91,6 +91,7 @@ export const GameScreenStyles = StyleSheet.create({
     color: '#666666',
     fontSize: 14,
     fontWeight: '400',
+    flexDirection: 'column',
     textAlign: 'center',
   },
 

@@ -133,7 +133,7 @@ const GameScreen = () => {
                       : 'draw'
                   }
                 />
-                <Text style={styles.cardLabel}>CPU Card</Text>
+                <Text style={styles.cardLabel}>Opponent's Card</Text>
               </View>
             </View>
 
@@ -145,7 +145,14 @@ const GameScreen = () => {
             )}
           </>
         ) : (
-          <Text style={styles.instructions}>Pick a trait to start!</Text>
+          <><Text style={styles.instructions}>Pick a trait to start!
+                         </Text>
+                          <Text style={styles.instructions}>
+                               Who ever has the highest value wins the round.
+                            </Text>
+                              <Text style={styles.instructions}>
+                            The person with the most cards wins the game.
+                            </Text></>
         )}
       </View>
 
