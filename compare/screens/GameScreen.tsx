@@ -81,11 +81,7 @@ const GameScreen = () => {
         </View>
       </View>
 
-      {/* Scoreboard */}
-      <View style={styles.scoreBoard}>
-        <Text style={styles.scoreText}>Your Cards Won: {playerWins.length}</Text>
-        <Text style={styles.scoreText}>CPU Cards Won: {cpuWins.length}</Text>
-      </View>
+   
 
       {/* Middle: Battle Zone */}
       <View style={styles.battleZone}>
@@ -93,23 +89,44 @@ const GameScreen = () => {
 
         {currentRound ? (
           <>
-            <View style={styles.battleContent}>
-              {/* Player Card */}
-              <View style={[styles.cardInfo, styles.userCardHighlight]}>
-                <Text style={styles.cardLabel}>Your Card</Text>
-                <Text style={styles.cardValue}>{currentRound.playerCard.name}</Text>
-                <Text style={styles.cardLabel}>{currentRound.attribute.toUpperCase()}</Text>
-                <Text style={styles.cardValue}>{currentRound.playerCard[currentRound.attribute]}</Text>
-              </View>
+<View style={styles.battleContent}>
+  <View style={{ alignItems: 'center' }}>
+    <Card
+      card={currentRound.playerCard}
+      large
+      selectedAttribute={currentRound.attribute}
+      result={
+        currentRound.playerCard[currentRound.attribute] >
+        currentRound.cpuCard[currentRound.attribute]
+          ? 'win'
+          : currentRound.playerCard[currentRound.attribute] <
+            currentRound.cpuCard[currentRound.attribute]
+          ? 'lose'
+          : 'draw'
+      }
+    />
+    <Text style={styles.cardLabel}>Your Card</Text>
+  </View>
 
-              {/* CPU Card */}
-              <View style={[styles.cardInfo, styles.cpuCardHighlight]}>
-                <Text style={styles.cardLabel}>CPU Card</Text>
-                <Text style={styles.cardValue}>{currentRound.cpuCard.name}</Text>
-                <Text style={styles.cardLabel}>{currentRound.attribute.toUpperCase()}</Text>
-                <Text style={styles.cardValue}>{currentRound.cpuCard[currentRound.attribute]}</Text>
-              </View>
-            </View>
+  <View style={{ alignItems: 'center' }}>
+    <Card
+      card={currentRound.cpuCard}
+      large
+      selectedAttribute={currentRound.attribute}
+      result={
+        currentRound.cpuCard[currentRound.attribute] >
+        currentRound.playerCard[currentRound.attribute]
+          ? 'win'
+          : currentRound.cpuCard[currentRound.attribute] <
+            currentRound.playerCard[currentRound.attribute]
+          ? 'lose'
+          : 'draw'
+      }
+    />
+    <Text style={styles.cardLabel}>CPU Card</Text>
+  </View>
+</View>
+
 
             {/* Show draw text only if draw */}
             {currentRound.result === 'Draw' && (

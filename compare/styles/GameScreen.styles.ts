@@ -1,4 +1,3 @@
-// styles/GameScreen.styles.ts
 import { Dimensions, StyleSheet } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
@@ -6,151 +5,200 @@ const screenWidth = Dimensions.get('window').width;
 export const GameScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#6F4E37',
-    padding: 16,
+    backgroundColor: '#ffffff',
+    padding: 0,
     justifyContent: 'space-between',
   },
+
+  // CPU/Opponent Section
   cpuSection: {
-    padding: 8,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    height: 130, // Reduced height for opponent section
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000', // black separator
+    backgroundColor: '#ffffff',
+    height: 120,
   },
+
   sectionLabel: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 16,
-    marginBottom: 6,
+    color: '#333333',
+    fontWeight: '500',
+    fontSize: 10,
+    marginBottom: 5,
+    textAlign: 'center',
   },
+
   cpuHand: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
+
   hiddenCard: {
-    width: (screenWidth - 104) / 3,
-    height: 100,
-    backgroundColor: '#333',
-    marginHorizontal: 0,
-    borderRadius: 10,
+    width: (screenWidth - 100) / 3,
+    height: 80,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#000000', // black card border
   },
+
+  // Scoreboard
+  scoreBoard: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+
+  scoreText: {
+    color: '#333333',
+    fontWeight: '400',
+    fontSize: 15,
+    textAlign: 'center',
+  },
+
+  // Battle Zone
   battleZone: {
     flex: 1,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 12,
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 12,
-    backgroundColor: '#4B342F', // darker background for emphasis
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: '#000000',
+    minHeight: 160,
   },
+
   battleTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 12,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 16,
   },
+
   battleContent: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '100%',
-    gap: 20,
+    gap: 16,
   },
+
   cardInfo: {
-    backgroundColor: '#7E5E4E',
-    borderRadius: 10,
-    padding: 12,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 6,
+    padding: 16,
     flex: 1,
     alignItems: 'center',
+    minHeight: 90,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#000000',
   },
+
   cardLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#ddd',
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#666666',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
+
+  cardValue: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333333',
     marginBottom: 6,
   },
-  cardValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
+
   userCardHighlight: {
     borderWidth: 2,
-    borderColor: '#76FF03', // bright green border for user card
+    borderColor: '#000000',
+    backgroundColor: '#f8f8f8',
   },
+
   cpuCardHighlight: {
     borderWidth: 2,
-    borderColor: '#FF3D00', // bright red border for CPU card
+    borderColor: '#000000',
+    backgroundColor: '#f0f0f0',
   },
+
   resultText: {
-    marginTop: 14,
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: '#fff',
+    marginTop: 16,
+    fontWeight: '500',
+    fontSize: 16,
+    color: '#333333',
     textAlign: 'center',
   },
+
   resultWin: {
-    color: '#76FF03', // green for win
+    color: '#333333',
   },
+
   resultLoss: {
-    color: '#FF3D00', // red for loss
+    color: '#666666',
   },
+
   instructions: {
-    color: '#ccc',
-    fontSize: 16,
+    color: '#666666',
+    fontSize: 14,
+    fontWeight: '400',
+    textAlign: 'center',
   },
+
+  // Player Section
+  section: {
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#000000',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+
+  // Trait Buttons
   traitButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 16,
+    gap: 8,
   },
-  traitButton: {
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 24,
-    minWidth: 90,
-    alignItems: 'center',
-  },
-  traitButtonText: {
-    color: '#6F4E37',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  resultSection: {
-    paddingTop: 14,
-    alignItems: 'center',
-  },
-  winnerText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 14,
-  },
-  section: {
-    padding: 12,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  scoreBoard: {
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  paddingVertical: 8,
-  backgroundColor: 'rgba(255, 255, 255, 0.15)',
-  borderRadius: 12,
-  marginBottom: 12,
-},
-scoreText: {
-  color: '#fff',
-  fontWeight: '700',
-  fontSize: 16,
-},
 
+  traitButton: {
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 6,
+    minWidth: 80,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000000',
+  },
+
+  traitButtonText: {
+    color: '#333333',
+    fontWeight: '500',
+    fontSize: 14,
+  },
+
+  // End Game Section
+  resultSection: {
+    paddingTop: 16,
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#000000',
+  },
+
+  winnerText: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
 });
