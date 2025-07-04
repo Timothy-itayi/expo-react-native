@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import {
+    Button,
+    FlatList,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import Card from '../components/Card';
 import { cards as allCards, CardType } from '../data/cards';
+import { GameScreenStyles as styles } from "../styles/GameScreen.styles";
 
 type Attribute = 'speed' | 'power' | 'grip';
 
@@ -9,6 +16,7 @@ interface RoundResult {
   playerCard: CardType;
   cpuCard: CardType;
   result: 'Player' | 'CPU' | 'Draw';
+  attribute: Attribute;
 }
 
 const GameScreen = () => {
@@ -18,6 +26,8 @@ const GameScreen = () => {
   const [playerWins, setPlayerWins] = useState<CardType[]>([]);
   const [cpuWins, setCpuWins] = useState<CardType[]>([]);
   const [currentRound, setCurrentRound] = useState<RoundResult | null>(null);
+
+  const isGameOver = playerHand.length === 0;
 
   useEffect(() => {
     const shuffled = [...allCards].sort(() => Math.random() - 0.5);
@@ -46,7 +56,7 @@ const GameScreen = () => {
 
     setPlayerHand(playerHand.slice(1));
     setCpuHand(cpuHand.slice(1));
-    setCurrentRound({ playerCard, cpuCard, result });
+    setCurrentRound({ playerCard, cpuCard, result, attribute: attr });
   };
 
   const resetGame = () => {
@@ -59,44 +69,90 @@ const GameScreen = () => {
     setCurrentRound(null);
   };
 
-  const renderHand = () => (
-    <FlatList
-      horizontal
-      data={playerHand}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => <Card card={item} />}
-    />
-  );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Compare 🚗</Text>
-
-      {currentRound && (
-        <View style={styles.roundInfo}>
-          <Text>🔹 You Played: {currentRound.playerCard.name}</Text>
-          <Text>🔸 CPU Played: {currentRound.cpuCard.name}</Text>
-          <Text>🏁 Winner: {currentRound.result}</Text>
+      {/* Top: CPU Cards */}
+      <View style={styles.cpuSection}>
+        <Text style={styles.sectionLabel}>Opponent</Text>
+        <View style={styles.cpuHand}>
+          {cpuHand.map((_, index) => (
+            <View key={index} style={styles.hiddenCard} />
+          ))}
         </View>
-      )}
-
-      <Text style={styles.label}>Your Hand:</Text>
-      {renderHand()}
-
-      <View style={styles.buttonContainer}>
-        <Text>Select Attribute to Compare:</Text>
-        <Button title="Speed" onPress={() => handleAttributeSelect('speed')} />
-        <Button title="Power" onPress={() => handleAttributeSelect('power')} />
-        <Button title="Grip" onPress={() => handleAttributeSelect('grip')} />
       </View>
 
-      <Text>Player Wins: {playerWins.length}</Text>
-      <Text>CPU Wins: {cpuWins.length}</Text>
+      {/* Scoreboard */}
+      <View style={styles.scoreBoard}>
+        <Text style={styles.scoreText}>Your Cards Won: {playerWins.length}</Text>
+        <Text style={styles.scoreText}>CPU Cards Won: {cpuWins.length}</Text>
+      </View>
 
-      {playerHand.length === 0 && (
+      {/* Middle: Battle Zone */}
+      <View style={styles.battleZone}>
+        <Text style={styles.battleTitle}>Battle Zone</Text>
+
+        {currentRound ? (
+          <>
+            <View style={styles.battleContent}>
+              {/* Player Card */}
+              <View style={[styles.cardInfo, styles.userCardHighlight]}>
+                <Text style={styles.cardLabel}>Your Card</Text>
+                <Text style={styles.cardValue}>{currentRound.playerCard.name}</Text>
+                <Text style={styles.cardLabel}>{currentRound.attribute.toUpperCase()}</Text>
+                <Text style={styles.cardValue}>{currentRound.playerCard[currentRound.attribute]}</Text>
+              </View>
+
+              {/* CPU Card */}
+              <View style={[styles.cardInfo, styles.cpuCardHighlight]}>
+                <Text style={styles.cardLabel}>CPU Card</Text>
+                <Text style={styles.cardValue}>{currentRound.cpuCard.name}</Text>
+                <Text style={styles.cardLabel}>{currentRound.attribute.toUpperCase()}</Text>
+                <Text style={styles.cardValue}>{currentRound.cpuCard[currentRound.attribute]}</Text>
+              </View>
+            </View>
+
+            {/* Show draw text only if draw */}
+            {currentRound.result === 'Draw' && (
+              <Text style={[styles.resultText, { color: '#fff' }]}>
+                It&apos;s a Draw!
+              </Text>
+            )}
+          </>
+        ) : (
+          <Text style={styles.instructions}>Pick a trait to start!</Text>
+        )}
+      </View>
+
+      {/* Bottom: Player Cards + Trait Buttons */}
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>Your Hand</Text>
+        <FlatList
+          horizontal
+          data={playerHand}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <Card card={item} />}
+        />
+
+        {!isGameOver && (
+          <View style={styles.traitButtons}>
+            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('speed')}>
+              <Text style={styles.traitButtonText}>Speed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('power')}>
+              <Text style={styles.traitButtonText}>Power</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('grip')}>
+              <Text style={styles.traitButtonText}>Grip</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      {/* End Game Section */}
+      {isGameOver && (
         <View style={styles.resultSection}>
-          <Text style={styles.winner}>
-            🎉 {playerWins.length > cpuWins.length ? 'You Win!' : 'CPU Wins!'}
+          <Text style={styles.winnerText}>
+            🎉 {playerWins.length > cpuWins.length ? 'You Win!' : playerWins.length < cpuWins.length ? 'CPU Wins!' : 'It\'s a Draw!'}
           </Text>
           <Button title="Play Again" onPress={resetGame} />
         </View>
@@ -104,15 +160,5 @@ const GameScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 22, fontWeight: 'bold' },
-  label: { marginTop: 10 },
-  roundInfo: { marginVertical: 10 },
-  buttonContainer: { marginVertical: 10 },
-  resultSection: { marginTop: 20 },
-  winner: { fontSize: 18 },
-});
 
 export default GameScreen;
