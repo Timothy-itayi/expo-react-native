@@ -71,17 +71,12 @@ export const Cardstyles = StyleSheet.create({
   },
 
   cardFooter: {
-    paddingVertical: 4,
+    paddingVertical: 0,
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
 
-  decorativeLine: {
-    width: '60%',
-    height: 2,
-    backgroundColor: '#333',
-    borderRadius: 1,
-  },
+  
   traitWin: {
   backgroundColor: '#d4edda', // Light green
   borderRadius: 4,

@@ -34,6 +34,9 @@ const GameScreen = () => {
     setDeck(shuffled);
     setPlayerHand(shuffled.slice(0, 3));
     setCpuHand(shuffled.slice(3, 6));
+    setPlayerWins([]);
+    setCpuWins([]);
+    setCurrentRound(null);
   }, []);
 
   const handleAttributeSelect = (attr: Attribute) => {
@@ -71,8 +74,9 @@ const GameScreen = () => {
 
   return (
     <View style={styles.container}>
+
       {/* Top: CPU Cards */}
-      <View style={styles.cpuSection}>
+      <View style={styles.opponentSection}>
         <Text style={styles.sectionLabel}>Opponent</Text>
         <View style={styles.cpuHand}>
           {cpuHand.map((_, index) => (
@@ -81,56 +85,61 @@ const GameScreen = () => {
         </View>
       </View>
 
-   
-
-      {/* Middle: Battle Zone */}
-      <View style={styles.battleZone}>
+      {/* Middle: Battle Zone with score */}
+      <View style={styles.battleSection}>
         <Text style={styles.battleTitle}>Battle Zone</Text>
+
+        {/* Score display */}
+        <View style={styles.scoreBoard}>
+          <Text style={styles.scoreText}>Your Cards: {playerHand.length + playerWins.length}</Text>
+          <Text style={styles.scoreText}>CPU Cards: {cpuHand.length + cpuWins.length}</Text>
+        </View>
 
         {currentRound ? (
           <>
-<View style={styles.battleContent}>
-  <View style={{ alignItems: 'center' }}>
-    <Card
-      card={currentRound.playerCard}
-      large
-      selectedAttribute={currentRound.attribute}
-      result={
-        currentRound.playerCard[currentRound.attribute] >
-        currentRound.cpuCard[currentRound.attribute]
-          ? 'win'
-          : currentRound.playerCard[currentRound.attribute] <
-            currentRound.cpuCard[currentRound.attribute]
-          ? 'lose'
-          : 'draw'
-      }
-    />
-    <Text style={styles.cardLabel}>Your Card</Text>
-  </View>
+            <View style={styles.battleContent}>
+              {/* Player Card */}
+              <View style={{ alignItems: 'center' }}>
+                <Card
+                  card={currentRound.playerCard}
+                  large
+                  selectedAttribute={currentRound.attribute}
+                  result={
+                    currentRound.playerCard[currentRound.attribute] >
+                    currentRound.cpuCard[currentRound.attribute]
+                      ? 'win'
+                      : currentRound.playerCard[currentRound.attribute] <
+                        currentRound.cpuCard[currentRound.attribute]
+                      ? 'lose'
+                      : 'draw'
+                  }
+                />
+                <Text style={styles.cardLabel}>Your Card</Text>
+              </View>
 
-  <View style={{ alignItems: 'center' }}>
-    <Card
-      card={currentRound.cpuCard}
-      large
-      selectedAttribute={currentRound.attribute}
-      result={
-        currentRound.cpuCard[currentRound.attribute] >
-        currentRound.playerCard[currentRound.attribute]
-          ? 'win'
-          : currentRound.cpuCard[currentRound.attribute] <
-            currentRound.playerCard[currentRound.attribute]
-          ? 'lose'
-          : 'draw'
-      }
-    />
-    <Text style={styles.cardLabel}>CPU Card</Text>
-  </View>
-</View>
-
+              {/* CPU Card */}
+              <View style={{ alignItems: 'center' }}>
+                <Card
+                  card={currentRound.cpuCard}
+                  large
+                  selectedAttribute={currentRound.attribute}
+                  result={
+                    currentRound.cpuCard[currentRound.attribute] >
+                    currentRound.playerCard[currentRound.attribute]
+                      ? 'win'
+                      : currentRound.cpuCard[currentRound.attribute] <
+                        currentRound.playerCard[currentRound.attribute]
+                      ? 'lose'
+                      : 'draw'
+                  }
+                />
+                <Text style={styles.cardLabel}>CPU Card</Text>
+              </View>
+            </View>
 
             {/* Show draw text only if draw */}
             {currentRound.result === 'Draw' && (
-              <Text style={[styles.resultText, { color: '#fff' }]}>
+              <Text style={[styles.resultText, { color: '#000' }]}>
                 It&apos;s a Draw!
               </Text>
             )}
@@ -140,40 +149,54 @@ const GameScreen = () => {
         )}
       </View>
 
-      {/* Bottom: Player Cards + Trait Buttons */}
-      <View style={styles.section}>
+      {/* Trait Buttons or End Game Section (bottom) */}
+      <View style={styles.traitSection}>
+        {!isGameOver ? (
+          <View style={styles.traitButtons}>
+            <TouchableOpacity
+              style={styles.traitButton}
+              onPress={() => handleAttributeSelect('speed')}
+            >
+              <Text style={styles.traitButtonText}>Speed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.traitButton}
+              onPress={() => handleAttributeSelect('power')}
+            >
+              <Text style={styles.traitButtonText}>Power</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.traitButton}
+              onPress={() => handleAttributeSelect('grip')}
+            >
+              <Text style={styles.traitButtonText}>Grip</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.resultSection}>
+            <Text style={styles.winnerText}>
+              🎉 {playerWins.length > cpuWins.length
+                ? 'You Win!'
+                : playerWins.length < cpuWins.length
+                ? 'CPU Wins!'
+                : "It's a Draw!"}
+            </Text>
+            <Button title="Play Again" onPress={resetGame} />
+          </View>
+        )}
+      </View>
+
+      {/* Bottom: Player Cards */}
+      <View style={styles.playerSection}>
         <Text style={styles.sectionLabel}>Your Hand</Text>
         <FlatList
           horizontal
           data={playerHand}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <Card card={item} />}
+          showsHorizontalScrollIndicator={false}
         />
-
-        {!isGameOver && (
-          <View style={styles.traitButtons}>
-            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('speed')}>
-              <Text style={styles.traitButtonText}>Speed</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('power')}>
-              <Text style={styles.traitButtonText}>Power</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.traitButton} onPress={() => handleAttributeSelect('grip')}>
-              <Text style={styles.traitButtonText}>Grip</Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
-
-      {/* End Game Section */}
-      {isGameOver && (
-        <View style={styles.resultSection}>
-          <Text style={styles.winnerText}>
-            🎉 {playerWins.length > cpuWins.length ? 'You Win!' : playerWins.length < cpuWins.length ? 'CPU Wins!' : 'It\'s a Draw!'}
-          </Text>
-          <Button title="Play Again" onPress={resetGame} />
-        </View>
-      )}
     </View>
   );
 };

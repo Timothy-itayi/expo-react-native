@@ -47,7 +47,7 @@ const Card = ({ card, large = false, selectedAttribute, result }: Props) => {
       </View>
 
       <View style={styles.cardFooter}>
-        <View style={styles.decorativeLine} />
+   
       </View>
     </View>
   );

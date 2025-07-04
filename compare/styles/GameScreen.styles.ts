@@ -6,17 +6,16 @@ export const GameScreenStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    padding: 0,
-    justifyContent: 'space-between',
   },
 
-  // CPU/Opponent Section
-  cpuSection: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000', // black separator
+  // === Opponent Section ===
+  opponentSection: {
+    paddingHorizontal: 16,
     backgroundColor: '#ffffff',
-    height: 120,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+    height: 140,
+
   },
 
   sectionLabel: {
@@ -29,7 +28,7 @@ export const GameScreenStyles = StyleSheet.create({
 
   cpuHand: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
 
@@ -37,109 +36,55 @@ export const GameScreenStyles = StyleSheet.create({
     width: (screenWidth - 100) / 3,
     height: 80,
     backgroundColor: '#f0f0f0',
+   
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#000000', // black card border
+    borderColor: '#000000',
   },
 
-  // Scoreboard
-  scoreBoard: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
+  // === Battle Section ===
+  battleSection: {
+    paddingHorizontal: 12,
+   
     backgroundColor: '#ffffff',
+    borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-  },
-
-  scoreText: {
-    color: '#333333',
-    fontWeight: '400',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-
-  // Battle Zone
-  battleZone: {
-    flex: 1,
-    padding: 20,
+    borderColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: '#000000',
-    minHeight: 160,
+    minHeight: 350,
   },
 
   battleTitle: {
     fontSize: 18,
     fontWeight: '500',
     color: '#333333',
-    marginBottom: 16,
+    marginBottom: 8,
   },
 
   battleContent: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     gap: 16,
-  },
-
-  cardInfo: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 6,
-    padding: 16,
-    flex: 1,
-    alignItems: 'center',
-    minHeight: 90,
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#000000',
   },
 
   cardLabel: {
     fontSize: 12,
     fontWeight: '400',
     color: '#666666',
-    marginBottom: 4,
+    marginTop: 8,
     textTransform: 'uppercase',
-  },
-
-  cardValue: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333333',
-    marginBottom: 6,
-  },
-
-  userCardHighlight: {
-    borderWidth: 2,
-    borderColor: '#000000',
-    backgroundColor: '#f8f8f8',
-  },
-
-  cpuCardHighlight: {
-    borderWidth: 2,
-    borderColor: '#000000',
-    backgroundColor: '#f0f0f0',
+    textAlign: 'center',
   },
 
   resultText: {
-    marginTop: 16,
+    marginTop: 12,
     fontWeight: '500',
     fontSize: 16,
     color: '#333333',
     textAlign: 'center',
-  },
-
-  resultWin: {
-    color: '#333333',
-  },
-
-  resultLoss: {
-    color: '#666666',
   },
 
   instructions: {
@@ -149,27 +94,24 @@ export const GameScreenStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Player Section
-  section: {
-    padding: 16,
+  // === Trait Section ===
+  traitSection: {
+    paddingHorizontal: 16,
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
     borderTopColor: '#000000',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
   },
 
-  // Trait Buttons
   traitButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 16,
-    gap: 8,
+    paddingVertical: 10,
+    gap: 1,
   },
 
   traitButton: {
     backgroundColor: '#f0f0f0',
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 18,
     borderRadius: 6,
     minWidth: 80,
@@ -184,14 +126,19 @@ export const GameScreenStyles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // End Game Section
-  resultSection: {
-    paddingTop: 16,
-    alignItems: 'center',
+  // === Player Section ===
+  playerSection: {
+    paddingHorizontal: 10,
     backgroundColor: '#ffffff',
-    padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#000000',
+  },
+
+  // === Result ===
+  resultSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
   },
 
   winnerText: {
@@ -200,5 +147,18 @@ export const GameScreenStyles = StyleSheet.create({
     color: '#333333',
     marginBottom: 16,
     textAlign: 'center',
+  },
+
+  // === Scoreboard ===
+  scoreBoard: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+
+  scoreText: {
+    fontWeight: '600',
+    fontSize: 16,
+    color: '#333',
   },
 });
