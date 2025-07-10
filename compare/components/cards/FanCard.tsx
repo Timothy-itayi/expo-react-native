@@ -1,9 +1,52 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import React from 'react';
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { BaseCardProps } from './BaseCard';
 
 const screenWidth = Dimensions.get('window').width;
-const CARD_RATIO = 1.0; // Standard playing card ratio
+const CARD_RATIO = 1.6;
 
-export const Cardstyles = StyleSheet.create({
+const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
+  const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
+    if (selectedAttribute !== attr) return null;
+    if (result === 'win') return styles.traitWin;
+    if (result === 'lose') return styles.traitLose;
+    if (result === 'draw') return styles.traitDraw;
+    return null;
+  };
+
+  const renderStat = (label: string, value: number, attr: 'speed' | 'power' | 'grip') => (
+    <View style={[styles.statRow, getHighlightStyle(attr)]}>
+      <Text style={styles.statLabel}>{label}</Text>
+      <Text style={styles.statValue}>{value}</Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.card}>
+      {/* Card Number and Name */}
+      <View style={styles.cardHeader}>
+        <View style={styles.cardNumberContainer}>
+          <Text style={styles.cardNumber}>{card.id}</Text>
+        </View>
+        <Text style={styles.name} numberOfLines={2}>{card.name}</Text>
+      </View>
+
+      {/* Car Image */}
+      <View style={styles.imageContainer}>
+        <Image source={card.image} style={styles.image} resizeMode="cover" />
+      </View>
+
+      {/* Stats Table */}
+      <View style={styles.statsContainer}>
+        {renderStat('Power', card.power, 'power')}
+        {renderStat('Weight', card.weight, 'grip')}
+        {renderStat('Speed', card.speed, 'speed')}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
   card: {
     width: screenWidth * 0.32,
     aspectRatio: 1/CARD_RATIO,
@@ -16,26 +59,12 @@ export const Cardstyles = StyleSheet.create({
     elevation: 3,
   },
 
-  cardLarge: {
-    width: screenWidth * 0.8,
-  },
-
-  cardBattle: {
-    width: screenWidth * 0.25, // Reduced from 0.35 to 0.25
-    transform: [{ rotate: '0deg' }],
-  },
-
   cardHeader: {
     backgroundColor: '#ffffff',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
-  },
-
-  cardHeaderBattle: {
-    paddingVertical: 4,
-    paddingHorizontal: 6,
   },
 
   cardNumberContainer: {
@@ -49,21 +78,10 @@ export const Cardstyles = StyleSheet.create({
     zIndex: 1,
   },
 
-  cardNumberContainerBattle: {
-    top: 4,
-    left: 6,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-  },
-
   cardNumber: {
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-
-  cardNumberBattle: {
-    fontSize: 12,
   },
 
   name: {
@@ -72,11 +90,6 @@ export const Cardstyles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginTop: 8,
-  },
-
-  nameBattle: {
-    fontSize: 12,
-    marginTop: 4,
   },
 
   imageContainer: {
@@ -97,10 +110,6 @@ export const Cardstyles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
 
-  statsBattle: {
-    padding: 4,
-  },
-
   statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -111,12 +120,6 @@ export const Cardstyles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
 
-  statRowBattle: {
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-    borderBottomWidth: 0.5,
-  },
-
   statLabel: {
     fontSize: 16,
     fontWeight: '500',
@@ -124,20 +127,11 @@ export const Cardstyles = StyleSheet.create({
     flex: 1,
   },
 
-  statLabelBattle: {
-    fontSize: 10,
-  },
-
   statValue: {
     fontSize: 16,
     fontWeight: '700',
     color: '#000000',
     marginLeft: 8,
-  },
-
-  statValueBattle: {
-    fontSize: 10,
-    marginLeft: 4,
   },
 
   traitWin: {
@@ -152,3 +146,5 @@ export const Cardstyles = StyleSheet.create({
     backgroundColor: '#e2e3e5',
   },
 });
+
+export default FanCard; 

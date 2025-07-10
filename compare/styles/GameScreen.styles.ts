@@ -42,57 +42,96 @@ export const GameScreenStyles = StyleSheet.create({
     borderColor: '#000000',
   },
 
+  // === Scoreboard ===
+  scoreBoard: {
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+
+  scoreRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 24,
+  },
+
+  scoreItem: {
+    alignItems: 'center',
+  },
+
+  playerName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#666666',
+    marginBottom: 4,
+  },
+
+  scoreValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+
+  scoreDivider: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#999999',
+  },
+
   // === Battle Section ===
   battleSection: {
-    paddingHorizontal: 12,
-   
+    flex: 1,
     backgroundColor: '#ffffff',
-    borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 350,
+    paddingVertical: 10,
   },
 
   battleTitle: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '500',
     color: '#333333',
-    marginBottom: 8,
+    marginBottom: 4,
   },
 
   battleContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    gap: 16,
+    paddingHorizontal: 10,
+    gap: 20, // Space between cards
   },
 
   cardLabel: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '400',
     color: '#666666',
-    marginTop: 8,
+    marginTop: 4,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
 
   resultText: {
-    marginTop: 12,
+    marginTop: 8,
     fontWeight: '500',
-    fontSize: 16,
+    fontSize: 12,
     color: '#333333',
     textAlign: 'center',
   },
 
   instructions: {
     color: '#666666',
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '400',
     flexDirection: 'column',
     textAlign: 'center',
+    marginTop: 4,
   },
 
   // === Trait Section ===
@@ -148,18 +187,5 @@ export const GameScreenStyles = StyleSheet.create({
     color: '#333333',
     marginBottom: 16,
     textAlign: 'center',
-  },
-
-  // === Scoreboard ===
-  scoreBoard: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-
-  scoreText: {
-    fontWeight: '600',
-    fontSize: 16,
-    color: '#333',
   },
 });
