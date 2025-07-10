@@ -1,82 +1,51 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
-const CARD_RATIO = 1.0; // Standard playing card ratio
+const MODAL_CARD_RATIO = 1.6;
 
-export const Cardstyles = StyleSheet.create({
+export const ModalCardStyles = StyleSheet.create({
   card: {
-    width: screenWidth * 0.32,
-    aspectRatio: 1/CARD_RATIO,
+    width: screenWidth * 0.8,
+    aspectRatio: 1/MODAL_CARD_RATIO,
     backgroundColor: '#ffffff',
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: '#000000',
     overflow: 'hidden',
-    marginHorizontal: 4,
     elevation: 3,
-  },
-
-  cardLarge: {
-    width: screenWidth * 0.8,
-  },
-
-  cardBattle: {
-    width: screenWidth * 0.25, // Reduced from 0.35 to 0.25
-    transform: [{ rotate: '0deg' }],
   },
 
   cardHeader: {
     backgroundColor: '#ffffff',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
   },
 
-  cardHeaderBattle: {
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-  },
-
   cardNumberContainer: {
     position: 'absolute',
-    top: 8,
-    left: 12,
+    top: 12,
+    left: 16,
     backgroundColor: '#ff0066',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
     zIndex: 1,
-  },
-
-  cardNumberContainerBattle: {
-    top: 4,
-    left: 6,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
   },
 
   cardNumber: {
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: 16,
-  },
-
-  cardNumberBattle: {
-    fontSize: 12,
+    fontSize: 20,
   },
 
   name: {
     color: '#000000',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 24,
     textAlign: 'center',
-    marginTop: 8,
-  },
-
-  nameBattle: {
-    fontSize: 12,
-    marginTop: 4,
+    marginTop: 12,
   },
 
   imageContainer: {
@@ -93,51 +62,32 @@ export const Cardstyles = StyleSheet.create({
   },
 
   statsContainer: {
-    padding: 12,
+    padding: 16,
     backgroundColor: '#ffffff',
-  },
-
-  statsBattle: {
-    padding: 4,
   },
 
   statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
 
-  statRowBattle: {
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-    borderBottomWidth: 0.5,
-  },
-
   statLabel: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '500',
     color: '#333333',
     flex: 1,
   },
 
-  statLabelBattle: {
-    fontSize: 10,
-  },
-
   statValue: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '700',
     color: '#000000',
-    marginLeft: 8,
-  },
-
-  statValueBattle: {
-    fontSize: 10,
-    marginLeft: 4,
+    marginLeft: 12,
   },
 
   traitWin: {
@@ -151,4 +101,4 @@ export const Cardstyles = StyleSheet.create({
   traitDraw: {
     backgroundColor: '#e2e3e5',
   },
-});
+}); 
