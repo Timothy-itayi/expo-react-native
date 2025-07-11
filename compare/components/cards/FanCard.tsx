@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { FanCardStyles as styles } from '../../styles/cards';
 import { BaseCardProps } from './BaseCard';
 
+const AnimatedImage = Animated.createAnimatedComponent(Image);
+
 const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
     if (selectedAttribute !== attr) return null;
     if (result === 'win') return styles.traitWin;
@@ -20,7 +25,10 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
   );
 
   return (
-    <View style={styles.card}>
+    <Animated.View 
+      style={styles.card}
+      entering={FadeIn.duration(300)}
+    >
       {/* Card Number and Name */}
       <View style={styles.cardHeader}>
         <View style={styles.cardNumberContainer}>
@@ -31,7 +39,17 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
 
       {/* Car Image */}
       <View style={styles.imageContainer}>
-        <Image source={card.image} style={styles.image} resizeMode="contain" />
+        <AnimatedImage
+          source={card.image}
+          style={[
+            styles.image,
+            { opacity: imageLoaded ? 1 : 0 }
+          ]}
+          resizeMode="contain"
+          onLoadStart={() => setImageLoaded(false)}
+          onLoad={() => setImageLoaded(true)}
+          entering={FadeIn.duration(300)}
+        />
       </View>
 
       {/* Stats Table */}
@@ -40,7 +58,7 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
         {renderStat('power', card.power, 'power')}
         {renderStat('weight', card.weight, 'grip')}
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

@@ -27,7 +27,7 @@ export const cards: CardType[] = [
     power: 95,
     grip: 80,
     weight: 2100,
-    image: require('../assets/images/cars/car01.jpg')
+     image: require('../assets/images/cars/car01.jpg')
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ export const cards: CardType[] = [
     power: 65,
     grip: 90,
     weight: 1350,
-    image: require('../assets/images/cars/car02.jpg'),
+     image: require('../assets/images/cars/car02.jpg'),
   },
   {
     id: 4,
@@ -45,7 +45,7 @@ export const cards: CardType[] = [
     power: 70,
     grip: 60,
     weight: 1400,
-    image: require('../assets/images/cars/car03.jpg'),
+     image: require('../assets/images/cars/car03.jpg'),
   },
   {
     id: 5,
@@ -54,7 +54,7 @@ export const cards: CardType[] = [
     power: 80,
     grip: 50,
     weight: 1150,
-    image: require('../assets/images/cars/car04.jpg'),
+     image: require('../assets/images/cars/car04.jpg'),
   },
   {
     id: 6,
@@ -63,7 +63,7 @@ export const cards: CardType[] = [
     power: 85,
     grip: 75,
     weight: 2300,
-    image: require('../assets/images/cars/car05.jpg'),
+     image: require('../assets/images/cars/car05.jpg'),
   },
   {
     id: 7,
@@ -72,7 +72,7 @@ export const cards: CardType[] = [
     power: 75,
     grip: 55,
     weight: 1250,
-    image: require('../assets/images/cars/car06.jpg'),
+     image: require('../assets/images/cars/car06.jpg'),
   },
   {
     id: 8,
@@ -81,7 +81,7 @@ export const cards: CardType[] = [
     power: 60,
     grip: 82,
     weight: 1380,
-    image: require('../assets/images/cars/car07.jpg'),
+     image: require('../assets/images/cars/car07.jpg'),
   },
   {
     id: 9,
@@ -90,7 +90,7 @@ export const cards: CardType[] = [
     power: 62,
     grip: 65,
     weight: 1280,
-    image: require('../assets/images/cars/car08.jpg')
+     image: require('../assets/images/cars/car08.jpg')
   },
   {
     id: 10,
@@ -99,7 +99,7 @@ export const cards: CardType[] = [
     power: 90,
     grip: 60,
     weight: 2200,
-    image: require('../assets/images/cars/car09.jpg'),
+     image: require('../assets/images/cars/car09.jpg'),
   },
   {
     id: 11,
@@ -108,7 +108,7 @@ export const cards: CardType[] = [
     power: 72,
     grip: 58,
     weight: 1180,
-    image: require('../assets/images/cars/car10.jpg'),
+     image: require('../assets/images/cars/car10.jpg'),
   },
   {
     id: 12,
@@ -117,7 +117,7 @@ export const cards: CardType[] = [
     power: 88,
     grip: 77,
     weight: 2400,
-    image: require('../assets/images/cars/car11.jpg'),
+     image: require('../assets/images/cars/car11.jpg'),
   },
   {
     id: 13,
@@ -126,7 +126,7 @@ export const cards: CardType[] = [
     power: 64,
     grip: 69,
     weight: 1320,
-    image: require('../assets/images/cars/car12.jpg'),
+     image: require('../assets/images/cars/car12.jpg'),
   },
   {
     id: 14,
@@ -135,7 +135,7 @@ export const cards: CardType[] = [
     power: 68,
     grip: 61,
     weight: 1220,
-    image: require('../assets/images/cars/car13.jpg'),
+     image: require('../assets/images/cars/car13.jpg'),
   },
   {
     id: 15,
@@ -144,6 +144,6 @@ export const cards: CardType[] = [
     power: 76,
     grip: 63,
     weight: 1450,
-    image: require('../assets/images/cars/car00.jpg'),
+     image: require('../assets/images/cars/car00.jpg'),
   },
 ];

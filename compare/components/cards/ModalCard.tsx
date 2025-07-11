@@ -1,11 +1,48 @@
-import React from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Text, View } from 'react-native';
+import Animated, {
+  Easing,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import { ModalCardStyles as styles } from '../../styles/cards';
 import { BaseCardProps } from './BaseCard';
 
-const screenWidth = Dimensions.get('window').width;
-const CARD_RATIO = 1.6;
+const AnimatedPressable = Animated.createAnimatedComponent(Animated.View);
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 
-const ModalCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
+// GSAP-like spring config for a natural, bouncy feel
+const springConfig = {
+  damping: 10,    // Lower damping for more bounce
+  stiffness: 100, // Balanced stiffness for natural movement
+  mass: 0.5,      // Lighter mass for quicker response
+  restDisplacementThreshold: 0.01,
+  restSpeedThreshold: 0.01,
+};
+
+// GSAP-like timing config for smooth transitions
+const timingConfig = {
+  duration: 400,
+  easing: Easing.bezier(0.25, 0.1, 0.25, 1), // GSAP's default ease
+};
+
+interface ModalCardProps extends BaseCardProps {
+  onSelectTrait?: (trait: 'speed' | 'power' | 'grip') => void;
+}
+
+const ModalCard = ({ card, selectedAttribute, result, onSelectTrait }: ModalCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const pressedValues = {
+    speed: useSharedValue(1),
+    power: useSharedValue(1),
+    grip: useSharedValue(1),
+  };
+  const imageOpacity = useSharedValue(0);
+
   const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
     if (selectedAttribute !== attr) return null;
     if (result === 'win') return styles.traitWin;
@@ -14,16 +51,73 @@ const ModalCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
     return null;
   };
 
-  const renderStat = (label: string, value: number, attr: 'speed' | 'power' | 'grip') => (
-    <View style={[styles.statRow, getHighlightStyle(attr)]}>
-      <Text style={styles.statLabel}>{label}</Text>
-      <Text style={styles.statValue}>{value}</Text>
-    </View>
+  const createAnimatedStyle = (trait: 'speed' | 'power' | 'grip') => {
+    return useAnimatedStyle(() => {
+      const scale = interpolate(
+        pressedValues[trait].value,
+        [0, 1],
+        [0.95, 1]
+      );
+      
+      return {
+        transform: [{ scale }],
+        opacity: interpolate(
+          pressedValues[trait].value,
+          [0, 1],
+          [0.7, 1]
+        ),
+      };
+    });
+  };
+
+  const handlePress = (trait: 'speed' | 'power' | 'grip') => {
+    // Quick press down
+    pressedValues[trait].value = withTiming(0, {
+      duration: 100,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+
+    // Bounce back with spring
+    setTimeout(() => {
+      pressedValues[trait].value = withSequence(
+        withSpring(1.05, springConfig),
+        withSpring(1, springConfig)
+      );
+    }, 100);
+
+    onSelectTrait?.(trait);
+  };
+
+  const imageAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: imageOpacity.value,
+    };
+  });
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    imageOpacity.value = withTiming(1, {
+      duration: 600,
+      easing: Easing.bezier(0.4, 0, 0.2, 1), // Smooth ease-out
+    });
+  };
+
+  const renderTraitButton = (label: string, value: number, trait: 'speed' | 'power' | 'grip') => (
+    <AnimatedPressable
+      style={[
+        styles.traitButton,
+        getHighlightStyle(trait),
+        createAnimatedStyle(trait),
+      ]}
+      onTouchStart={() => handlePress(trait)}
+    >
+      <Text style={styles.traitLabel}>{label}</Text>
+      <Text style={styles.traitValue}>{value}</Text>
+    </AnimatedPressable>
   );
 
   return (
     <View style={styles.card}>
-      {/* Card Number and Name */}
       <View style={styles.cardHeader}>
         <View style={styles.cardNumberContainer}>
           <Text style={styles.cardNumber}>{card.id}</Text>
@@ -31,119 +125,26 @@ const ModalCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
         <Text style={styles.name} numberOfLines={2}>{card.name}</Text>
       </View>
 
-      {/* Car Image */}
       <View style={styles.imageContainer}>
-        <Image source={card.image} style={styles.image} resizeMode="cover" />
+        <AnimatedImage
+          source={card.image}
+          style={[
+            styles.image,
+            imageAnimatedStyle
+          ]}
+          resizeMode="contain"
+          onLoadStart={() => setImageLoaded(false)}
+          onLoad={handleImageLoad}
+        />
       </View>
 
-      {/* Stats Table */}
-      <View style={styles.statsContainer}>
-        {renderStat('Power', card.power, 'power')}
-        {renderStat('Weight', card.weight, 'grip')}
-        {renderStat('Speed', card.speed, 'speed')}
+      <View style={styles.traitsContainer}>
+        {renderTraitButton('speed', card.speed, 'speed')}
+        {renderTraitButton('power', card.power, 'power')}
+        {renderTraitButton('weight', card.weight, 'grip')}
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    width: screenWidth * 0.8,
-    aspectRatio: 1/CARD_RATIO,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#000000',
-    overflow: 'hidden',
-    elevation: 3,
-  },
-
-  cardHeader: {
-    backgroundColor: '#ffffff',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-  },
-
-  cardNumberContainer: {
-    position: 'absolute',
-    top: 12,
-    left: 16,
-    backgroundColor: '#ff0066',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    zIndex: 1,
-  },
-
-  cardNumber: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-
-  name: {
-    color: '#000000',
-    fontWeight: 'bold',
-    fontSize: 24,
-    textAlign: 'center',
-    marginTop: 12,
-  },
-
-  imageContainer: {
-    width: '100%',
-    height: '50%',
-    backgroundColor: '#f5f5f5',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
-  },
-
-  image: {
-    width: '100%',
-    height: '100%',
-  },
-
-  statsContainer: {
-    padding: 16,
-    backgroundColor: '#ffffff',
-  },
-
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-
-  statLabel: {
-    fontSize: 20,
-    fontWeight: '500',
-    color: '#333333',
-    flex: 1,
-  },
-
-  statValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#000000',
-    marginLeft: 12,
-  },
-
-  traitWin: {
-    backgroundColor: '#d4edda',
-  },
-
-  traitLose: {
-    backgroundColor: '#f8d7da',
-  },
-
-  traitDraw: {
-    backgroundColor: '#e2e3e5',
-  },
-});
 
 export default ModalCard; 

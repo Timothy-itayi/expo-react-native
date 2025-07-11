@@ -139,16 +139,16 @@ export const Cardstyles = StyleSheet.create({
     fontSize: 10,
     marginLeft: 4,
   },
-
+  
   traitWin: {
     backgroundColor: '#d4edda',
-  },
+},
 
-  traitLose: {
+traitLose: {
     backgroundColor: '#f8d7da',
-  },
+},
 
-  traitDraw: {
+traitDraw: {
     backgroundColor: '#e2e3e5',
-  },
+},
 });
