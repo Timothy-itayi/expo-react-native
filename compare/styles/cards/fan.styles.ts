@@ -5,7 +5,7 @@ const FAN_CARD_RATIO = 1.6;
 
 export const FanCardStyles = StyleSheet.create({
   card: {
-    width: screenWidth * 0.32,
+    width: screenWidth * 0.38, // Increased from 0.32 for better readability
     aspectRatio: 1/FAN_CARD_RATIO,
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -22,12 +22,13 @@ export const FanCardStyles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    height: 40, // Fixed height for consistent spacing
   },
 
   cardNumberContainer: {
     position: 'absolute',
     top: 8,
-    left: 12,
+    left: 8,
     backgroundColor: '#ff0066',
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -38,32 +39,39 @@ export const FanCardStyles = StyleSheet.create({
   cardNumber: {
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 14,
   },
 
   name: {
     color: '#000000',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 5, // Increased to avoid overlap with number
+    paddingHorizontal: 4,
   },
 
   imageContainer: {
     width: '100%',
     height: '50%',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+    overflow: 'hidden',
   },
 
   image: {
     width: '100%',
     height: '100%',
+    resizeMode: 'contain',
+    flex: 1,
   },
 
   statsContainer: {
-    padding: 12,
+    padding: 8,
     backgroundColor: '#ffffff',
   },
 
@@ -71,24 +79,26 @@ export const FanCardStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
 
   statLabel: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 14,
+    fontWeight: '400',
     color: '#333333',
+    textTransform: 'lowercase',
     flex: 1,
   },
 
   statValue: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
     color: '#000000',
-    marginLeft: 8,
+    textAlign: 'right',
+    minWidth: 80,
   },
 
   traitWin: {

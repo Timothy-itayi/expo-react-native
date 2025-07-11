@@ -36,7 +36,7 @@ const BaseCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
 
       {/* Car Image */}
       <View style={styles.imageContainer}>
-        <Image source={card.image} style={styles.image} resizeMode="cover" />
+        <Image source={card.image} style={styles.image} resizeMode="contain" />
       </View>
 
       {/* Stats Table */}
@@ -98,11 +98,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   image: {
     width: '100%',
     height: '100%',
+    resizeMode: 'contain',
   },
 
   statsContainer: {
