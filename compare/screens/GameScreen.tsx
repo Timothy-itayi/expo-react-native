@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  Text,
-  View
+    Button,
+    Text,
+    View
 } from 'react-native';
 import Animated, {
-  FadeInDown,
+    FadeInDown,
 } from 'react-native-reanimated';
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';

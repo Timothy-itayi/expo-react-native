@@ -1,11 +1,11 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
-const MODAL_CARD_RATIO = 1.6;
+const MODAL_CARD_RATIO = 1.5;
 
 export const ModalCardStyles = StyleSheet.create({
   card: {
-    width: screenWidth * 0.8,
+    width: screenWidth * 0.85,
     aspectRatio: 1/MODAL_CARD_RATIO,
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -17,12 +17,12 @@ export const ModalCardStyles = StyleSheet.create({
 
   cardHeader: {
     backgroundColor: '#ffffff',
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
     height: '15%',
-    justifyContent: 'center', // Center content vertically
+    justifyContent: 'center',
   },
 
   cardNumberContainer: {
@@ -39,21 +39,21 @@ export const ModalCardStyles = StyleSheet.create({
   cardNumber: {
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
 
   name: {
     color: '#000000',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 24,
     textAlign: 'center',
-    marginTop: 4, // Reduced from 24
+    marginTop: 4,
     paddingHorizontal: 4,
   },
 
   imageContainer: {
     width: '100%',
-    height: '55%', // Adjusted for better proportions
+    height: '55%',
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
@@ -70,37 +70,42 @@ export const ModalCardStyles = StyleSheet.create({
     flex: 1,
   },
 
-  statsContainer: {
-    height: '30%', // Fixed proportion
+  traitsContainer: {
+    height: '30%',
     padding: 8,
     backgroundColor: '#ffffff',
     justifyContent: 'space-evenly',
   },
 
-  statRow: {
+  traitButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    paddingHorizontal: 16,
+    backgroundColor: 'transparent',
+    marginVertical: 4,
+    borderWidth: 2,
+    borderColor: 'darkgray',
+    // For border edge animation, the borderColor can be animated in the component
+    // Remove shadow and elevation for minimalism
+    overflow: 'hidden',
   },
 
-  statLabel: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#333333',
+  traitLabel: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: '#000000',
     textTransform: 'lowercase',
     flex: 1,
   },
 
-  statValue: {
-    fontSize: 16,
-    fontWeight: '600',
+  traitValue: {
+    fontSize: 20,
+    fontWeight: '700',
     color: '#000000',
     textAlign: 'right',
-    minWidth: 80,
+    minWidth: 60,
   },
 
   traitWin: {

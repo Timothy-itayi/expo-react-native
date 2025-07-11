@@ -15,6 +15,10 @@ export const BattleCardStyles = StyleSheet.create({
     elevation: 3,
   },
 
+  cardLarge: {
+    width: screenWidth * 0.85,
+  },
+
   cardHeader: {
     backgroundColor: '#ffffff',
     paddingVertical: 6,
@@ -22,7 +26,7 @@ export const BattleCardStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
     height: '15%',
-    justifyContent: 'center', // Center content vertically
+    justifyContent: 'center',
   },
 
   cardNumberContainer: {
@@ -42,18 +46,26 @@ export const BattleCardStyles = StyleSheet.create({
     fontSize: 14,
   },
 
+  cardNumberLarge: {
+    fontSize: 18,
+  },
+
   name: {
     color: '#000000',
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 4, // Reduced from 20
+    marginTop: 4,
     paddingHorizontal: 4,
+  },
+
+  nameLarge: {
+    fontSize: 24,
   },
 
   imageContainer: {
     width: '100%',
-    height: '55%', // Adjusted for better proportions
+    height: '55%',
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
@@ -71,7 +83,7 @@ export const BattleCardStyles = StyleSheet.create({
   },
 
   statsContainer: {
-    height: '30%', // Fixed proportion
+    height: '30%',
     padding: 4,
     backgroundColor: '#ffffff',
     justifyContent: 'space-evenly',
@@ -85,6 +97,7 @@ export const BattleCardStyles = StyleSheet.create({
     paddingHorizontal: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+    borderRadius: 6,
   },
 
   statLabel: {
@@ -101,6 +114,18 @@ export const BattleCardStyles = StyleSheet.create({
     color: '#000000',
     textAlign: 'right',
     minWidth: 60,
+  },
+
+  statLabelInteractive: {
+    fontSize: 20,
+    fontWeight: '500',
+    color: '#000000',
+  },
+
+  statValueInteractive: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000000',
   },
 
   traitWin: {
