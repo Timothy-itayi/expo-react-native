@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-    FadeIn,
-    FadeOut
+  FadeIn,
+  FadeOut
 } from 'react-native-reanimated';
 import { CardType } from '../data/cards';
 import BattleCard from './cards/BattleCard';
@@ -15,7 +15,7 @@ interface CardFanProps {
   onSelectAttribute?: (attribute: 'speed' | 'power' | 'grip') => void;
 }
 
-const CARD_OVERLAP = 60; // How much each card overlaps
+const CARD_OVERLAP = 80; // Increased overlap for wider cards
 const CARD_ROTATION = 5; // Degrees of rotation between cards
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -69,7 +69,7 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.fanContainer}>
+      <View style={[styles.fanContainer, { marginLeft: SCREEN_WIDTH / 6 }]}>
         {renderFannedCards()}
       </View>
 

@@ -13,7 +13,7 @@ const BattleCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
   };
 
   const renderStat = (label: string, value: number, attr: 'speed' | 'power' | 'grip') => (
-    <View style={[styles.statColumn, getHighlightStyle(attr)]}>
+    <View style={[styles.statRow, getHighlightStyle(attr)]}>
       <Text style={styles.statLabel}>{label}</Text>
       <Text style={styles.statValue}>{value}</Text>
     </View>
@@ -21,21 +21,24 @@ const BattleCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
 
   return (
     <View style={styles.card}>
-      {/* Card Name */}
+      {/* Card Number and Name */}
       <View style={styles.cardHeader}>
+        <View style={styles.cardNumberContainer}>
+          <Text style={styles.cardNumber}>{card.id}</Text>
+        </View>
         <Text style={styles.name} numberOfLines={1}>{card.name}</Text>
       </View>
 
       {/* Car Image */}
       <View style={styles.imageContainer}>
-        <Image source={card.image} style={styles.image} resizeMode="cover" />
+        <Image source={card.image} style={styles.image} resizeMode="contain" />
       </View>
 
       {/* Stats Table */}
       <View style={styles.statsContainer}>
-        {renderStat('SPD', card.speed, 'speed')}
-        {renderStat('PWR', card.power, 'power')}
-        {renderStat('GRP', card.weight, 'grip')}
+        {renderStat('speed', card.speed, 'speed')}
+        {renderStat('power', card.power, 'power')}
+        {renderStat('weight', card.weight, 'grip')}
       </View>
     </View>
   );

@@ -1,72 +1,106 @@
 import { Dimensions, StyleSheet } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
-const BATTLE_CARD_RATIO = 1.5; // Keeping original ratio
+const BATTLE_CARD_RATIO = 1.5;
 
 export const BattleCardStyles = StyleSheet.create({
   card: {
-    width: screenWidth * 0.45, // Adjusted to match the reference size
+    width: screenWidth * 0.45,
     aspectRatio: 1/BATTLE_CARD_RATIO,
     backgroundColor: '#ffffff',
-    borderRadius: 4,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#000000',
     overflow: 'hidden',
-    elevation: 2,
+    elevation: 3,
   },
 
   cardHeader: {
-    backgroundColor: '#333333',
-    paddingVertical: 8,
+    backgroundColor: '#ffffff',
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    height: '15%',
+    justifyContent: 'center', // Center content vertically
+  },
+
+  cardNumberContainer: {
+    position: 'absolute',
+    top: 6,
+    left: 8,
+    backgroundColor: '#ff0066',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+
+  cardNumber: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 
   name: {
-    color: '#ffffff',
+    color: '#000000',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
     textAlign: 'center',
+    marginTop: 4, // Reduced from 20
+    paddingHorizontal: 4,
   },
 
   imageContainer: {
     width: '100%',
-    height: '60%',
+    height: '55%', // Adjusted for better proportions
     backgroundColor: '#ffffff',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+    overflow: 'hidden',
   },
 
   image: {
     width: '100%',
     height: '100%',
-  },
-
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 12,
-    backgroundColor: '#ffffff',
-    height: '20%',
-  },
-
-  statColumn: {
-    alignItems: 'center',
+    resizeMode: 'contain',
     flex: 1,
   },
 
+  statsContainer: {
+    height: '30%', // Fixed proportion
+    padding: 4,
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-evenly',
+  },
+
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+
   statLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#666666',
-    
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#333333',
+    textTransform: 'lowercase',
+    flex: 1,
   },
 
   statValue: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
     color: '#000000',
+    textAlign: 'right',
+    minWidth: 60,
   },
 
   traitWin: {
