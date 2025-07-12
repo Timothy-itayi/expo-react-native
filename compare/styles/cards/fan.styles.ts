@@ -114,4 +114,15 @@ export const FanCardStyles = StyleSheet.create({
   traitDraw: {
     backgroundColor: '#e2e3e5',
   },
+
+  errorText: {
+    position: 'absolute',
+    color: '#ff0000',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    width: '100%',
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
 }); 

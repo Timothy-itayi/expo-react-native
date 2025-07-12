@@ -12,7 +12,6 @@ import Animated, {
 import { BattleCardStyles as styles } from '../../styles/cards';
 import { BaseCardProps } from './BaseCard';
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 interface BattleCardProps extends BaseCardProps {
@@ -127,9 +126,9 @@ const BattleCard = ({
         </Text>
       </View>
 
-      {/* Car Image */}
-      <View style={styles.imageContainer}>
-        <AnimatedImage
+      {/* Car Image - Wrapped in Animated.View to avoid conflicts */}
+      <Animated.View style={styles.imageContainer}>
+        <Image
           source={card.image}
           style={[
             styles.image,
@@ -138,9 +137,8 @@ const BattleCard = ({
           resizeMode="contain"
           onLoadStart={() => setImageLoaded(false)}
           onLoad={() => setImageLoaded(true)}
-          entering={FadeIn.duration(300)}
         />
-      </View>
+      </Animated.View>
 
       {/* Stats Table */}
       <View style={styles.statsContainer}>
