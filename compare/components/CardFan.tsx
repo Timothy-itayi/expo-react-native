@@ -51,9 +51,13 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
         zIndex: index,
       };
 
+      // Generate a unique key using both card ID and index
+      const uniqueKey = `card-${card.id}-${index}`;
+      console.log(`🎴 Rendering card with key: ${uniqueKey}`);
+
       return (
         <TouchableWithoutFeedback
-          key={card.id}
+          key={uniqueKey}
           onPress={() => setSelectedCard(card)}
         >
           <View style={style}>

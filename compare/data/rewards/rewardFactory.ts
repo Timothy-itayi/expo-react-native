@@ -62,40 +62,40 @@ export class RewardFactory {
         description: 'Victory Points',
         timestamp: new Date()
       });
-    }
 
-    // Streak bonus
-    const streakMultiplier = this.calculateStreakBonus(currentStreak);
-    if (streakMultiplier > 1) {
-      const streakBonus = basePoints * (streakMultiplier - 1);
-      rewards.push({
-        type: 'streak',
-        amount: streakBonus,
-        description: `${streakMultiplier}x Streak Bonus!`,
-        timestamp: new Date()
-      });
-    }
+      // Only calculate streak bonus if player won (basePoints > 0)
+      const streakMultiplier = this.calculateStreakBonus(currentStreak);
+      if (streakMultiplier > 1) {
+        const streakBonus = basePoints * (streakMultiplier - 1);
+        rewards.push({
+          type: 'streak',
+          amount: streakBonus,
+          description: `${streakMultiplier}x Streak Bonus!`,
+          timestamp: new Date()
+        });
+      }
 
-    // Perfect win
-    const perfectBonus = this.calculatePerfectBonus(battleResult);
-    if (perfectBonus > 0) {
-      rewards.push({
-        type: 'perfect',
-        amount: perfectBonus,
-        description: 'Perfect Victory!',
-        timestamp: new Date()
-      });
-    }
+      // Perfect win
+      const perfectBonus = this.calculatePerfectBonus(battleResult);
+      if (perfectBonus > 0) {
+        rewards.push({
+          type: 'perfect',
+          amount: perfectBonus,
+          description: 'Perfect Victory!',
+          timestamp: new Date()
+        });
+      }
 
-    // Comeback bonus
-    const comebackBonus = this.calculateComebackBonus(battleResult);
-    if (comebackBonus > 0) {
-      rewards.push({
-        type: 'comeback',
-        amount: comebackBonus,
-        description: 'Amazing Comeback!',
-        timestamp: new Date()
-      });
+      // Comeback bonus
+      const comebackBonus = this.calculateComebackBonus(battleResult);
+      if (comebackBonus > 0) {
+        rewards.push({
+          type: 'comeback',
+          amount: comebackBonus,
+          description: 'Amazing Comeback!',
+          timestamp: new Date()
+        });
+      }
     }
 
     const totalPoints = rewards.reduce((sum, reward) => sum + reward.amount, 0);

@@ -37,6 +37,15 @@ const IMAGE_MAP: { [key: string]: any } = {
   'car11': require('../assets/images/cars/car11.jpg'),
   'car12': require('../assets/images/cars/car12.jpg'),
   'car13': require('../assets/images/cars/car13.jpg'),
+  'car14': require('../assets/images/cars/car14.jpg'),
+  'car15': require('../assets/images/cars/car15.jpg'),
+  'car16': require('../assets/images/cars/car16.jpg'),
+  'car17': require('../assets/images/cars/car17.jpg'),
+  'car18': require('../assets/images/cars/car18.jpg'),
+  'car19': require('../assets/images/cars/car19.jpg'),
+  'car20': require('../assets/images/cars/car20.jpg'),
+  'car21': require('../assets/images/cars/car21.jpg'),
+  'car22': require('../assets/images/cars/car22.jpg'),
 
 };
 
@@ -174,8 +183,107 @@ export class CardFactory {
       imageKey: 'car12',
       category: 'speed',
       rarity: 'rare'
+    },  {
+      name: 'Opel',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car13',
+      category: 'speed',
+      rarity: 'rare'
     },
-  
+    {
+      name: 'Ferrari',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car14',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Mercedes',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car15',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Mercedes',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car16',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Subaru',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car17',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Quicksilver',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car18',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Supra',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car19',
+      category: 'speed',
+      rarity: 'rare'
+    },
+
+    {
+      name: 'Porsche',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car20',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Lamborghini',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car21',
+      category: 'speed',
+      rarity: 'rare'
+    },
+    {
+      name: 'Maserati',
+      baseSpeed: 87,
+      basePower: 64,
+      baseGrip: 69,
+      baseWeight: 1320,
+      imageKey: 'car22',
+      category: 'speed',
+      rarity: 'rare'
+    },
   ];
 
   static createCard(templateName: string, variations?: Partial<CardType>): CardType {
