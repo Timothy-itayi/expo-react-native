@@ -27,7 +27,7 @@ export const ModalCardStyles = StyleSheet.create({
 
   cardNumberContainer: {
     position: 'absolute',
-    top: 6,
+    top: 23,
     left: 8,
     backgroundColor: '#ff0066',
     paddingHorizontal: 8,
