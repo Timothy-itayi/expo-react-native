@@ -63,15 +63,15 @@ const GameScreen = () => {
       // Force reset card storage and regenerate cards
       await CardManager.forceReset();
       
-      // Get 6 unique cards (3 for player, 3 for CPU)
+      // Get 10 unique cards (5 for player, 5 for CPU)
       const gameCards = CardFactory.createCardSet(6);
       console.log('🎮 Initializing game with unique cards:', 
         gameCards.map(card => `${card.name}(${card.id})`).join(', ')
       );
       
       setDeck(gameCards);
-      setPlayerHand(gameCards.slice(0, 3));
-      setCpuHand(gameCards.slice(3, 6));
+      setPlayerHand(gameCards.slice(0, 3)); // Increased to 5 cards
+      setCpuHand(gameCards.slice(3, 6));   // Increased to 5 cards4
       setPlayerWins([]);
       setCpuWins([]);
       setCurrentRound(null);
@@ -104,15 +104,15 @@ const GameScreen = () => {
   };
 
   const resetGame = async () => {
-    // Get 6 new unique cards
-    const newGameCards = CardFactory.createCardSet(6);
+    // Get 10 new unique cards
+    const newGameCards = CardFactory.createCardSet(10);
     console.log('🔄 Resetting game with new unique cards:', 
       newGameCards.map(card => `${card.name}(${card.id})`).join(', ')
     );
     
     setDeck(newGameCards);
-    setPlayerHand(newGameCards.slice(0, 3));
-    setCpuHand(newGameCards.slice(3, 6));
+    setPlayerHand(newGameCards.slice(0, 3)); // Increased to 5 cards
+    setCpuHand(newGameCards.slice(3, 6));   // Increased to 5 cards
     setPlayerWins([]);
     setCpuWins([]);
     setCurrentRound(null);

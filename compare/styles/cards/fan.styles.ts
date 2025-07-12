@@ -49,7 +49,7 @@ export const FanCardStyles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginTop: 5,
-    marginLeft: 20, // Increased to avoid overlap with number
+    marginLeft: 30, // Increased to avoid overlap with number
     paddingHorizontal: 4,
   },
 

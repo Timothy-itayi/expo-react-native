@@ -9,8 +9,10 @@ interface CardFanProps {
   onSelectAttribute?: (trait: 'speed' | 'power' | 'grip') => void;
 }
 
-const CARD_OVERLAP = 80;
-const CARD_ROTATION = 5;
+// Adjusted constants for better card spacing with more cards
+const CARD_OVERLAP = 60; // Reduced from 80 to allow more cards
+const CARD_ROTATION = 4; // Reduced from 5 for a gentler curve
+const MAX_FAN_WIDTH = Dimensions.get('window').width * 0.85; // 85% of screen width
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
@@ -26,12 +28,20 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
   };
 
   const renderFannedCards = () => {
-    const centerX = SCREEN_WIDTH / 2;
-    const fanWidth = cards.length * CARD_OVERLAP;
-    const startX = centerX - (fanWidth / 2);
+    // Calculate the total width needed for all cards
+    const totalWidth = cards.length * CARD_OVERLAP;
+    
+    // If total width exceeds MAX_FAN_WIDTH, adjust the overlap
+    const adjustedOverlap = totalWidth > MAX_FAN_WIDTH 
+      ? (MAX_FAN_WIDTH / cards.length)
+      : CARD_OVERLAP;
+
+    // Center the fan
+    const fanWidth = cards.length * adjustedOverlap;
+    const startX = (SCREEN_WIDTH - fanWidth) / 3;
 
     return cards.map((card, index) => {
-      const offset = startX + (index * CARD_OVERLAP);
+      const offset = startX + (index * adjustedOverlap);
       const rotation = (index - (cards.length - 1) / 2) * CARD_ROTATION;
       
       const style = {
@@ -88,12 +98,12 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 200,
+    height: 220, // Increased height to accommodate more cards
     justifyContent: 'center',
     overflow: 'hidden',
   },
   fanContainer: {
-    height: 180,
+    height: 200, // Increased height
     width: '100%',
     position: 'relative',
   },
