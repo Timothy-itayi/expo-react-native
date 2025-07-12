@@ -7,7 +7,6 @@ export interface CardType {
   weight: number;
   image: any;
   category?: string;
-  rarity?: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
 export interface CardTemplate {
@@ -16,9 +15,8 @@ export interface CardTemplate {
   basePower: number;
   baseGrip: number;
   baseWeight: number;
-  imageKey: string; // Changed from imagePath to imageKey
+  imageKey: string;
   category: string;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
 // Static image mapping - all require statements must be static
@@ -46,7 +44,6 @@ const IMAGE_MAP: { [key: string]: any } = {
   'car20': require('../assets/images/cars/car20.jpg'),
   'car21': require('../assets/images/cars/car21.jpg'),
   'car22': require('../assets/images/cars/car22.jpg'),
-
 };
 
 export class CardFactory {
@@ -59,8 +56,7 @@ export class CardFactory {
       baseGrip: 70,
       baseWeight: 1200,
       imageKey: 'car00',
-      category: 'speed',
-      rarity: 'common'
+      category: 'speed'
     },
     {
       name: 'Rocket',
@@ -69,8 +65,7 @@ export class CardFactory {
       baseGrip: 50,
       baseWeight: 1150,
       imageKey: 'car04',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     // Power-focused cars
     {
@@ -80,8 +75,7 @@ export class CardFactory {
       baseGrip: 80,
       baseWeight: 2100,
       imageKey: 'car01',
-      category: 'power',
-      rarity: 'common'
+      category: 'power'
     },
     {
       name: 'Bulldozer',
@@ -90,8 +84,7 @@ export class CardFactory {
       baseGrip: 75,
       baseWeight: 2300,
       imageKey: 'car05',
-      category: 'power',
-      rarity: 'rare'
+      category: 'power'
     },
     // Balanced cars
     {
@@ -101,8 +94,7 @@ export class CardFactory {
       baseGrip: 90,
       baseWeight: 1350,
       imageKey: 'car02',
-      category: 'balanced',
-      rarity: 'common'
+      category: 'balanced'
     },
     {
       name: 'Panther',
@@ -111,8 +103,7 @@ export class CardFactory {
       baseGrip: 82,
       baseWeight: 1380,
       imageKey: 'car07',
-      category: 'balanced',
-      rarity: 'rare'
+      category: 'balanced'
     },
     {
       name: 'Blazer',
@@ -121,8 +112,7 @@ export class CardFactory {
       baseGrip: 60,
       baseWeight: 1400,
       imageKey: 'car03',
-      category: 'speed',
-      rarity: 'common'
+      category: 'speed'
     },
     {
       name: 'Falcon',
@@ -131,8 +121,7 @@ export class CardFactory {
       baseGrip: 55,
       baseWeight: 1250,
       imageKey: 'car06',
-      category: 'balanced',
-      rarity: 'common'
+      category: 'balanced'
     },
     {
       name: 'Ghost',
@@ -141,8 +130,7 @@ export class CardFactory {
       baseGrip: 65,
       baseWeight: 1280,
       imageKey: 'car08',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Crusher',
@@ -151,8 +139,7 @@ export class CardFactory {
       baseGrip: 60,
       baseWeight: 2200,
       imageKey: 'car09',
-      category: 'power',
-      rarity: 'rare'
+      category: 'power'
     },
     {
       name: 'Nitro',
@@ -161,8 +148,7 @@ export class CardFactory {
       baseGrip: 58,
       baseWeight: 1180,
       imageKey: 'car10',
-      category: 'speed',
-      rarity: 'epic'
+      category: 'speed'
     },
     {
       name: 'Goliath',
@@ -171,8 +157,7 @@ export class CardFactory {
       baseGrip: 77,
       baseWeight: 2400,
       imageKey: 'car11',
-      category: 'power',
-      rarity: 'epic'
+      category: 'power'
     },
     {
       name: 'Venom',
@@ -181,17 +166,16 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car12',
-      category: 'speed',
-      rarity: 'rare'
-    },  {
+      category: 'speed'
+    },
+    {
       name: 'Opel',
       baseSpeed: 87,
       basePower: 64,
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car13',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Ferrari',
@@ -200,8 +184,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car14',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Mercedes',
@@ -210,8 +193,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car15',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Mercedes',
@@ -220,8 +202,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car16',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Subaru',
@@ -230,8 +211,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car17',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Quicksilver',
@@ -240,8 +220,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car18',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Supra',
@@ -250,10 +229,8 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car19',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
-
     {
       name: 'Porsche',
       baseSpeed: 87,
@@ -261,8 +238,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car20',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Lamborghini',
@@ -271,8 +247,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car21',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
     {
       name: 'Maserati',
@@ -281,8 +256,7 @@ export class CardFactory {
       baseGrip: 69,
       baseWeight: 1320,
       imageKey: 'car22',
-      category: 'speed',
-      rarity: 'rare'
+      category: 'speed'
     },
   ];
 
@@ -302,41 +276,43 @@ export class CardFactory {
     }
 
     const card: CardType = {
-      id: templateIndex, // Use template position as ID
+      id: templateIndex,
       name: template.name,
       speed: template.baseSpeed + (variations?.speed || 0),
       power: template.basePower + (variations?.power || 0),
       grip: template.baseGrip + (variations?.grip || 0),
       weight: template.baseWeight + (variations?.weight || 0),
       image: imageRef,
-      category: template.category,
-      rarity: template.rarity
+      category: template.category
     };
 
     return this.validateCard(card);
   }
 
   static createCardSet(count: number): CardType[] {
+    console.log(`🎴 [CardFactory] Creating card set of ${count} cards`);
     const cards: CardType[] = [];
     const usedImageKeys = new Set<string>();
+    const usedTemplates = new Set<string>();
 
     while (cards.length < count) {
       // Get a random template that hasn't been used yet
       const availableTemplates = this.cardTemplates.filter(template => 
-        !usedImageKeys.has(template.imageKey) || usedImageKeys.size >= Object.keys(IMAGE_MAP).length
+        !usedTemplates.has(template.name)
       );
 
       if (availableTemplates.length === 0) {
-        console.warn('⚠️ No more unique images available, resetting used images tracking');
-        usedImageKeys.clear();
+        console.warn('⚠️ No more unique templates available, resetting template tracking');
+        usedTemplates.clear();
         continue;
       }
 
       const randomIndex = Math.floor(Math.random() * availableTemplates.length);
       const selectedTemplate = availableTemplates[randomIndex];
       
-      console.log(`🎲 Creating card ${cards.length + 1}/${count} with image: ${selectedTemplate.imageKey}`);
+      console.log(`🎴 Creating card ${cards.length + 1}/${count} using template: ${selectedTemplate.name}`);
       
+      // Create variations that will be consistent for this card
       const variations = {
         speed: Math.floor(Math.random() * 10) - 5,
         power: Math.floor(Math.random() * 10) - 5,
@@ -344,24 +320,43 @@ export class CardFactory {
         weight: Math.floor(Math.random() * 200) - 100
       };
 
+      console.log(`🎴 Card variations:`, variations);
+
       const card = this.createCard(selectedTemplate.name, variations);
+      console.log(`🎴 Created card: ${card.name}(${card.id}) with stats:`, {
+        speed: card.speed,
+        power: card.power,
+        grip: card.grip,
+        weight: card.weight
+      });
+
       cards.push(card);
-      usedImageKeys.add(selectedTemplate.imageKey);
+      usedTemplates.add(selectedTemplate.name);
     }
+
+    console.log('🎴 Final card set:', cards.map(card => ({
+      name: card.name,
+      id: card.id,
+      stats: {
+        speed: card.speed,
+        power: card.power,
+        grip: card.grip,
+        weight: card.weight
+      }
+    })));
 
     return cards;
   }
 
   static createRandomCard(): CardType {
-    // This method is now only used internally by createCardSet
     const randomTemplate = this.cardTemplates[Math.floor(Math.random() * this.cardTemplates.length)];
     console.log(`🎲 Selected random template: "${randomTemplate.name}" with image key: ${randomTemplate.imageKey}`);
     
     const variations = {
-      speed: Math.floor(Math.random() * 10) - 5, // -5 to +5
+      speed: Math.floor(Math.random() * 10) - 5,
       power: Math.floor(Math.random() * 10) - 5,
       grip: Math.floor(Math.random() * 10) - 5,
-      weight: Math.floor(Math.random() * 200) - 100 // -100 to +100
+      weight: Math.floor(Math.random() * 200) - 100
     };
 
     return this.createCard(randomTemplate.name, variations);
@@ -370,12 +365,6 @@ export class CardFactory {
   static getCardsByCategory(category: string): CardType[] {
     return this.cardTemplates
       .filter(template => template.category === category)
-      .map(template => this.createCard(template.name));
-  }
-
-  static getCardsByRarity(rarity: string): CardType[] {
-    return this.cardTemplates
-      .filter(template => template.rarity === rarity)
       .map(template => this.createCard(template.name));
   }
 

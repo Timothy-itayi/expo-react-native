@@ -17,11 +17,19 @@ export interface GameState {
 }
 
 export class GameStateFactory {
+  // Store initial cards for the game
+  private static initialPlayerCards: CardType[] = [];
+  private static initialCPUCards: CardType[] = [];
+
   private static logDebug(message: string, data?: any) {
     console.log(`🎮 [GameStateFactory] ${message}`, data ? data : '');
   }
 
   static createInitialState(): GameState {
+    // Clear stored cards when creating initial state
+    this.initialPlayerCards = [];
+    this.initialCPUCards = [];
+    
     return {
       deck: [],
       playerHand: [],
@@ -38,16 +46,26 @@ export class GameStateFactory {
   static async createNewGame(): Promise<GameState> {
     this.logDebug('Creating new game state');
     
-    // Get 6 unique cards (3 for player, 3 for CPU)
-    const gameCards = CardFactory.createCardSet(6);
-    this.logDebug('Generated unique cards:', 
-      gameCards.map(card => `${card.name}(${card.id})`).join(', ')
-    );
+    // Only create new cards if we don't have initial cards stored
+    if (this.initialPlayerCards.length === 0 || this.initialCPUCards.length === 0) {
+      const gameCards = CardFactory.createCardSet(6);
+      this.initialPlayerCards = gameCards.slice(0, 3);
+      this.initialCPUCards = gameCards.slice(3, 6);
+      
+      this.logDebug('Generated new cards:', 
+        gameCards.map(card => `${card.name}(${card.id})`).join(', ')
+      );
+    } else {
+      this.logDebug('Reusing existing cards:', 
+        [...this.initialPlayerCards, ...this.initialCPUCards]
+          .map(card => `${card.name}(${card.id})`).join(', ')
+      );
+    }
 
     return {
-      deck: gameCards,
-      playerHand: gameCards.slice(0, 3),
-      cpuHand: gameCards.slice(3, 6),
+      deck: [...this.initialPlayerCards, ...this.initialCPUCards],
+      playerHand: [...this.initialPlayerCards],
+      cpuHand: [...this.initialCPUCards],
       playerWins: [],
       cpuWins: [],
       currentRound: null,
@@ -60,9 +78,16 @@ export class GameStateFactory {
   static async resetPoints(): Promise<void> {
     this.logDebug('Resetting points');
     await RewardManager.forceReset();
+    // Clear stored cards when resetting points
+    this.initialPlayerCards = [];
+    this.initialCPUCards = [];
   }
 
   static createGameOverState(currentState: GameState): GameState {
+    // Clear stored cards when game is over
+    this.initialPlayerCards = [];
+    this.initialCPUCards = [];
+    
     return {
       ...currentState,
       isGameOver: true,
