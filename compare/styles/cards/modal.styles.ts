@@ -27,13 +27,18 @@ export const ModalCardStyles = StyleSheet.create({
 
   cardNumberContainer: {
     position: 'absolute',
-    top: 23,
-    left: 8,
+    top: 18,
+    left: 15,
+    marginLeft: 10,
     backgroundColor: '#ff0066',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
     zIndex: 1,
+    minWidth: 48,          // ensure larger minimum width
+    minHeight: 32,         // ensure larger minimum height
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   cardNumber: {
@@ -85,8 +90,8 @@ export const ModalCardStyles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: 'transparent',
     marginVertical: 4,
-    borderWidth: 2,
-    borderColor: 'darkgray',
+    borderWidth: 1,
+    borderColor: 'black',
     // For border edge animation, the borderColor can be animated in the component
     // Remove shadow and elevation for minimalism
     overflow: 'hidden',
