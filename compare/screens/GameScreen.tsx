@@ -68,6 +68,7 @@ const GameScreen = () => {
     const initializeGame = async () => {
       setShowGameOver(false);
       setIsTransitioningToGameOver(false);
+      
       // Reset points when entering the screen
       await GameStateFactory.resetPoints();
       
@@ -85,6 +86,11 @@ const GameScreen = () => {
     };
 
     initializeGame();
+
+    // Cleanup when component unmounts
+    return () => {
+      // gameAudio.cleanup(); // Removed audio cleanup
+    };
   }, []);
 
   const updateScore = () => {
@@ -204,6 +210,13 @@ const GameScreen = () => {
     setCurrentRound(null);
     setRewards([]);
     battleTracker.startNewBattle();
+
+    // Switch back to gameplay music
+    // try {
+    //   await gameAudio.play(); // Removed audio play
+    // } catch (error: unknown) {
+    //   console.error('Failed to play gameplay music:', error);
+    // }
   };
 
   // Add debug logging for initial game state

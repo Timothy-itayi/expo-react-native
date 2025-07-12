@@ -1,7 +1,30 @@
 
 import { Stack } from 'expo-router';
+import { useEffect } from 'react';
+import { audioManager } from '../services/audioManager';
 
 export default function RootLayout() {
+  useEffect(() => {
+    const setupAudio = async () => {
+      try {
+        // Initialize audio manager
+        await audioManager.initialize();
+        
+        // Start playing main menu theme
+        await audioManager.playBackgroundMusic('mainMenu');
+      } catch (error) {
+        console.error('Failed to setup audio:', error);
+      }
+    };
+
+    setupAudio();
+
+    // Cleanup on unmount
+    return () => {
+      audioManager.cleanup();
+    };
+  }, []);
+
   return (
     <Stack
       screenOptions={{

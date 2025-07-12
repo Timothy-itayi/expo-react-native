@@ -9,8 +9,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <Text style={styles.titleMain}>Compare</Text>
-        <Text style={styles.titleSub}>card game</Text>
+        <Text style={styles.titleMain}>Showdown</Text>
+        <Text style={styles.titleSub}>Card Game</Text>
       </View>
       <View style={styles.buttonContainer}>
         <Link href="/game" asChild>
