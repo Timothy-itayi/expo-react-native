@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import Animated, {
-  FadeIn,
-  FadeOut,
-  SlideOutDown,
-} from 'react-native-reanimated';
-import { CardType } from '../data/cards';
+import React, { useState } from 'react';
+import { Dimensions, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { CardType } from '../data/cardFactory';
 import FanCard from './cards/FanCard';
 import ModalCard from './cards/ModalCard';
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
 interface CardFanProps {
   cards: CardType[];
-  onSelectAttribute?: (attribute: 'speed' | 'power' | 'grip') => void;
+  onSelectAttribute?: (trait: 'speed' | 'power' | 'grip') => void;
 }
 
 const CARD_OVERLAP = 80;
@@ -22,50 +15,23 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
-  const [imagesPreloaded, setImagesPreloaded] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-
-  useEffect(() => {
-    const preloadImages = async () => {
-      try {
-        const imagePromises = cards.map((card) => {
-          return Image.prefetch(Image.resolveAssetSource(card.image).uri);
-        });
-        await Promise.all(imagePromises);
-        setImagesPreloaded(true);
-      } catch (error) {
-        console.warn('Error preloading images:', error);
-        setImagesPreloaded(true);
-      }
-    };
-
-    preloadImages();
-  }, [cards]);
 
   const handleSelectTrait = (trait: 'speed' | 'power' | 'grip') => {
-    setIsClosing(true);
-    setTimeout(() => {
-      onSelectAttribute?.(trait);
-      setSelectedCard(null);
-      setIsClosing(false);
-    }, 300);
+    onSelectAttribute?.(trait);
+    setSelectedCard(null);
   };
 
   const handleCloseModal = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setSelectedCard(null);
-      setIsClosing(false);
-    }, 300);
+    setSelectedCard(null);
   };
 
   const renderFannedCards = () => {
-    if (!imagesPreloaded) {
-      return null;
-    }
+    const centerX = SCREEN_WIDTH / 2;
+    const fanWidth = cards.length * CARD_OVERLAP;
+    const startX = centerX - (fanWidth / 2);
 
     return cards.map((card, index) => {
-      const offset = index * CARD_OVERLAP;
+      const offset = startX + (index * CARD_OVERLAP);
       const rotation = (index - (cards.length - 1) / 2) * CARD_ROTATION;
       
       const style = {
@@ -76,45 +42,41 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
       };
 
       return (
-        <AnimatedTouchable
+        <TouchableWithoutFeedback
           key={card.id}
-          style={[style]}
-          entering={FadeIn.delay(index * 100).duration(300)}
-          exiting={FadeOut.duration(200)}
           onPress={() => setSelectedCard(card)}
         >
-          <FanCard card={card} />
-        </AnimatedTouchable>
+          <View style={style}>
+            <FanCard card={card} />
+          </View>
+        </TouchableWithoutFeedback>
       );
     });
   };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.fanContainer, { marginLeft: SCREEN_WIDTH / 6 }]}>
+      <View style={styles.fanContainer}>
         {renderFannedCards()}
       </View>
 
       <Modal
         visible={selectedCard !== null}
         transparent
-        animationType="fade"
+        animationType="none"
         onRequestClose={handleCloseModal}
       >
         <TouchableWithoutFeedback onPress={handleCloseModal}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
-              <Animated.View 
-                style={styles.modalContent}
-                exiting={isClosing ? SlideOutDown.duration(300) : undefined}
-              >
+              <View style={styles.modalContent}>
                 {selectedCard && (
                   <ModalCard 
                     card={selectedCard}
                     onSelectTrait={handleSelectTrait}
                   />
                 )}
-              </Animated.View>
+              </View>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
@@ -128,10 +90,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   fanContainer: {
     height: 180,
-    marginLeft: SCREEN_WIDTH / 4,
+    width: '100%',
+    position: 'relative',
   },
   modalOverlay: {
     flex: 1,

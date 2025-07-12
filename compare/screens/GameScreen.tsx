@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';
-import { cards as allCards, CardType } from '../data/cards';
+import { CardFactory, CardManager, CardType } from '../data/cards';
 import { GameScreenStyles as styles } from "../styles/GameScreen.styles";
 
 type Attribute = 'speed' | 'power' | 'grip';
@@ -59,13 +59,25 @@ const GameScreen = () => {
   const isGameOver = playerHand.length === 0;
 
   useEffect(() => {
-    const shuffled = [...allCards].sort(() => Math.random() - 0.5);
-    setDeck(shuffled);
-    setPlayerHand(shuffled.slice(0, 3));
-    setCpuHand(shuffled.slice(3, 6));
-    setPlayerWins([]);
-    setCpuWins([]);
-    setCurrentRound(null);
+    const initializeGame = async () => {
+      // Force reset card storage and regenerate cards
+      await CardManager.forceReset();
+      
+      // Get 6 unique cards (3 for player, 3 for CPU)
+      const gameCards = CardFactory.createCardSet(6);
+      console.log('🎮 Initializing game with unique cards:', 
+        gameCards.map(card => `${card.name}(${card.id})`).join(', ')
+      );
+      
+      setDeck(gameCards);
+      setPlayerHand(gameCards.slice(0, 3));
+      setCpuHand(gameCards.slice(3, 6));
+      setPlayerWins([]);
+      setCpuWins([]);
+      setCurrentRound(null);
+    };
+
+    initializeGame();
   }, []);
 
   const handleAttributeSelect = (attr: Attribute) => {
@@ -91,11 +103,16 @@ const GameScreen = () => {
     setCurrentRound({ playerCard, cpuCard, result, attribute: attr });
   };
 
-  const resetGame = () => {
-    const reshuffled = [...allCards].sort(() => Math.random() - 0.5);
-    setDeck(reshuffled);
-    setPlayerHand(reshuffled.slice(0, 3));
-    setCpuHand(reshuffled.slice(3, 6));
+  const resetGame = async () => {
+    // Get 6 new unique cards
+    const newGameCards = CardFactory.createCardSet(6);
+    console.log('🔄 Resetting game with new unique cards:', 
+      newGameCards.map(card => `${card.name}(${card.id})`).join(', ')
+    );
+    
+    setDeck(newGameCards);
+    setPlayerHand(newGameCards.slice(0, 3));
+    setCpuHand(newGameCards.slice(3, 6));
     setPlayerWins([]);
     setCpuWins([]);
     setCurrentRound(null);

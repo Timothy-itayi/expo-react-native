@@ -30,10 +30,12 @@ export default function RootLayout() {
           headerBackTitle: 'Home',
         }}
       />
+    
       <Stack.Screen 
         name="contact"
         options={{ 
-          headerShown: false,
+          title: 'Contact',
+          headerBackTitle: 'Home',
         }}
       />
     </Stack>

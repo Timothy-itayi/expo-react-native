@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import { FanCardStyles as styles } from '../../styles/cards';
+import { FanCardStyles as styles } from '../../styles/cards/fan.styles';
 import { BaseCardProps } from './BaseCard';
-
-const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Log card details when component mounts
+    console.log(`🎴 Rendering card ${card.id} (${card.name})`);
+    console.log(`📷 Image source:`, card.image);
+  }, [card]);
 
   const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
     if (selectedAttribute !== attr) return null;
@@ -24,11 +28,27 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
     </View>
   );
 
+  const handleImageLoadStart = () => {
+    console.log(`🔄 Starting to load image for card ${card.id} (${card.name})`);
+    setImageLoaded(false);
+    setImageError(null);
+  };
+
+  const handleImageLoad = () => {
+    console.log(`✅ Successfully loaded image for card ${card.id} (${card.name})`);
+    setImageLoaded(true);
+    setImageError(null);
+  };
+
+  const handleImageError = (error: any) => {
+    const errorMsg = `Failed to load image for card ${card.id} (${card.name}): ${error}`;
+    console.error(`❌ ${errorMsg}`);
+    setImageError(errorMsg);
+    setImageLoaded(false);
+  };
+
   return (
-    <Animated.View 
-      style={styles.card}
-      entering={FadeIn.duration(300)}
-    >
+    <View style={styles.card}>
       {/* Card Number and Name */}
       <View style={styles.cardHeader}>
         <View style={styles.cardNumberContainer}>
@@ -39,17 +59,20 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
 
       {/* Car Image */}
       <View style={styles.imageContainer}>
-        <AnimatedImage
+        <Image
           source={card.image}
           style={[
             styles.image,
-            { opacity: imageLoaded ? 1 : 0 }
+            { opacity: imageLoaded ? 1 : 0.3 }
           ]}
           resizeMode="contain"
-          onLoadStart={() => setImageLoaded(false)}
-          onLoad={() => setImageLoaded(true)}
-          entering={FadeIn.duration(300)}
+          onLoadStart={handleImageLoadStart}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
         />
+        {imageError && (
+          <Text style={styles.errorText}>!</Text>
+        )}
       </View>
 
       {/* Stats Table */}
@@ -58,7 +81,7 @@ const FanCard = ({ card, selectedAttribute, result }: BaseCardProps) => {
         {renderStat('power', card.power, 'power')}
         {renderStat('weight', card.weight, 'grip')}
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
