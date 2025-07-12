@@ -6,30 +6,34 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#007AFF',
+          backgroundColor: '#ffffff',
         },
-        headerTintColor: '#fff',
+        headerTintColor: '#000000',
         headerTitleStyle: {
-          fontWeight: 'bold',
+          fontWeight: '600',
+          fontSize: 18,
         },
+        headerShadowVisible: false,
+        headerBackTitle: ' ', // Empty space to remove back text but keep gesture
       }}
     >
       <Stack.Screen 
         name="index"
         options={{ 
-          title: 'Car Card Game',
+          headerShown: false,
         }}
       />
       <Stack.Screen 
         name="game"
         options={{ 
           title: 'Game',
+          headerBackTitle: 'Home',
         }}
       />
       <Stack.Screen 
         name="contact"
         options={{ 
-          title: 'Contact Us',
+          headerShown: false,
         }}
       />
     </Stack>

@@ -22,7 +22,8 @@ export const FanCardStyles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
-    height: 40, // Fixed height for consistent spacing
+    height: 40, 
+    // Fixed height for consistent spacing
   },
 
   cardNumberContainer: {
@@ -47,7 +48,8 @@ export const FanCardStyles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 5, // Increased to avoid overlap with number
+    marginTop: 5,
+    marginLeft: 10, // Increased to avoid overlap with number
     paddingHorizontal: 4,
   },
 
