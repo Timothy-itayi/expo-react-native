@@ -7,7 +7,7 @@ export const ModalCardStyles = StyleSheet.create({
   card: {
     width: screenWidth * 0.85,
     aspectRatio: 1/MODAL_CARD_RATIO,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#000000',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#000000',

@@ -9,8 +9,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';
-import { CardFactory, CardManager, CardType } from '../data/cards';
+import { CardType } from '../data/cards';
 import { BattleTracker } from '../data/game/battleTracker';
+import { GameState, GameStateFactory } from '../data/game/gameStateFactory';
 import { RewardManager } from '../data/rewards/rewardManager';
 import { GameScreenStyles as styles } from "../styles/GameScreen.styles";
 import { BattleReward } from '../types/rewards';
@@ -55,43 +56,25 @@ const ScoreBoard = ({
 };
 
 const GameScreen = () => {
-  const [deck, setDeck] = useState<CardType[]>([]);
-  const [playerHand, setPlayerHand] = useState<CardType[]>([]);
-  const [cpuHand, setCpuHand] = useState<CardType[]>([]);
-  const [playerWins, setPlayerWins] = useState<CardType[]>([]);
-  const [cpuWins, setCpuWins] = useState<CardType[]>([]);
+  const [gameState, setGameState] = useState<GameState>(GameStateFactory.createInitialState());
   const [currentRound, setCurrentRound] = useState<RoundResult | null>(null);
   const [battleTracker] = useState(() => new BattleTracker());
   const [rewards, setRewards] = useState<BattleReward[]>([]);
   const [totalPoints, setTotalPoints] = useState<number>(0);
-  const [currentScore, setCurrentScore] = useState({ player: 0, cpu: 0 });
-
-  const isGameOver = playerHand.length === 0;
 
   useEffect(() => {
     const initializeGame = async () => {
+      // Reset points when entering the screen
+      await GameStateFactory.resetPoints();
+      
       // Initialize reward manager
       await RewardManager.initialize();
       const stats = RewardManager.getStats();
       setTotalPoints(stats.totalPoints);
       
-      // Force reset card storage and regenerate cards
-      await CardManager.forceReset();
-      
-      // Get 6 unique cards (3 for player, 3 for CPU)
-      const gameCards = CardFactory.createCardSet(6);
-      console.log('🎮 Initializing game with unique cards:', 
-        gameCards.map(card => `${card.name}(${card.id})`).join(', ')
-      );
-      
-      setDeck(gameCards);
-      setPlayerHand(gameCards.slice(0, 3));
-      setCpuHand(gameCards.slice(3, 6));
-      setPlayerWins([]);
-      setCpuWins([]);
-      setCurrentRound(null);
-      setRewards([]);
-      setCurrentScore({ player: 0, cpu: 0 });
+      // Create new game state
+      const newGameState = await GameStateFactory.createNewGame();
+      setGameState(newGameState);
       
       // Start new battle tracking
       battleTracker.startNewBattle();
@@ -102,19 +85,18 @@ const GameScreen = () => {
 
   const updateScore = () => {
     const state = battleTracker.getCurrentState();
-    setCurrentScore({
-      player: state.cpuCardLosses, // When CPU loses, player wins
-      cpu: state.playerCardLosses  // When player loses, CPU wins
-    });
-    console.log('📊 Score updated:', {
-      player: state.cpuCardLosses,
-      cpu: state.playerCardLosses
-    });
+    setGameState(prevState => ({
+      ...prevState,
+      score: {
+        player: state.cpuCardLosses,
+        cpu: state.playerCardLosses
+      }
+    }));
   };
 
   const handleAttributeSelect = (attr: Attribute) => {
-    const playerCard = playerHand[0];
-    const cpuCard = cpuHand[0];
+    const playerCard = gameState.playerHand[0];
+    const cpuCard = gameState.cpuHand[0];
 
     const playerValue = playerCard[attr];
     const cpuValue = cpuCard[attr];
@@ -128,22 +110,29 @@ const GameScreen = () => {
     
     // Record the round
     battleTracker.recordRound(roundResult);
-    updateScore(); // Update score after recording the round
+    updateScore();
 
-    if (result === 'Player') {
-      setPlayerWins([...playerWins, playerCard, cpuCard]);
-    } else if (result === 'CPU') {
-      setCpuWins([...cpuWins, playerCard, cpuCard]);
-    }
+    setGameState(prevState => {
+      const newState = { ...prevState };
+      
+      if (result === 'Player') {
+        newState.playerWins = [...prevState.playerWins, playerCard, cpuCard];
+      } else if (result === 'CPU') {
+        newState.cpuWins = [...prevState.cpuWins, playerCard, cpuCard];
+      }
 
-    setPlayerHand(playerHand.slice(1));
-    setCpuHand(cpuHand.slice(1));
+      newState.playerHand = prevState.playerHand.slice(1);
+      newState.cpuHand = prevState.cpuHand.slice(1);
+      
+      // Check if game is over
+      if (newState.playerHand.length === 0) {
+        return GameStateFactory.createGameOverState(newState);
+      }
+      
+      return newState;
+    });
+
     setCurrentRound(roundResult);
-
-    // Check if game is over after this move
-    if (playerHand.length <= 1) {
-      handleGameOver();
-    }
   };
 
   const handleGameOver = async () => {
@@ -154,28 +143,20 @@ const GameScreen = () => {
     // Update total points
     const stats = RewardManager.getStats();
     setTotalPoints(stats.totalPoints);
-    
-    // Reset tracker for next game
-    battleTracker.startNewBattle();
   };
 
+  // Watch for game over state changes
+  useEffect(() => {
+    if (gameState.isGameOver) {
+      handleGameOver();
+    }
+  }, [gameState.isGameOver]);
+
   const resetGame = async () => {
-    // Get 6 new unique cards
-    const newGameCards = CardFactory.createCardSet(6);
-    console.log('🔄 Resetting game with new unique cards:', 
-      newGameCards.map(card => `${card.name}(${card.id})`).join(', ')
-    );
-    
-    setDeck(newGameCards);
-    setPlayerHand(newGameCards.slice(0, 3));
-    setCpuHand(newGameCards.slice(3, 6));
-    setPlayerWins([]);
-    setCpuWins([]);
+    const newGameState = await GameStateFactory.createNewGame();
+    setGameState(newGameState);
     setCurrentRound(null);
     setRewards([]);
-    setCurrentScore({ player: 0, cpu: 0 });
-    
-    // Start new battle tracking
     battleTracker.startNewBattle();
   };
 
@@ -183,16 +164,16 @@ const GameScreen = () => {
     <View style={styles.container}>
       {/* Scoreboard */}
       <ScoreBoard 
-        playerScore={currentScore.player}
-        cpuScore={currentScore.cpu}
+        playerScore={gameState.score.player}
+        cpuScore={gameState.score.cpu}
         totalPoints={totalPoints}
       />
 
-      {/* Rest of the component remains the same */}
+      {/* Battle Section */}
       <View style={styles.battleSection}>
         <Text style={styles.battleTitle}>Battle Zone</Text>
 
-        {currentRound ? (
+        {currentRound && gameState.isGameStarted ? (
           <>
             <View style={styles.battleContent}>
               {/* Player Card */}
@@ -238,32 +219,32 @@ const GameScreen = () => {
               </Text>
             )}
           </>
-        ) : (
+        ) : gameState.isGameStarted ? (
           <Text style={styles.instructions}>
             Select a card and choose a trait to start the battle!
           </Text>
-        )}
+        ) : null}
       </View>
 
       {/* Player's Hand */}
       <View style={styles.playerSection}>
         <Text style={styles.sectionLabel}>Your Hand</Text>
-        {!isGameOver && (
+        {gameState.isGameStarted && !gameState.isGameOver && (
           <CardFan 
-            cards={playerHand}
+            cards={gameState.playerHand}
             onSelectAttribute={handleAttributeSelect}
           />
         )}
       </View>
 
       {/* Game Over Overlay */}
-      {isGameOver && (
+      {gameState.isGameOver && (
         <View style={styles.battleOverlay}>
           <View style={styles.battleOverlayContent}>
             <Text style={styles.winnerText}>
-              {currentScore.player > currentScore.cpu ? (
+              {gameState.score.player > gameState.score.cpu ? (
                 'You Win!'
-              ) : currentScore.player < currentScore.cpu ? (
+              ) : gameState.score.player < gameState.score.cpu ? (
                 'CPU Wins!'
               ) : (
                 "It's a Draw!"

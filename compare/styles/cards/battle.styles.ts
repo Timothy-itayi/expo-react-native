@@ -7,7 +7,7 @@ export const BattleCardStyles = StyleSheet.create({
   card: {
     width: screenWidth * 0.45,
     aspectRatio: 1/BATTLE_CARD_RATIO,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#000000',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#000000',

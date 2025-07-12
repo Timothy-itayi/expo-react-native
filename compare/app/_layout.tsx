@@ -30,7 +30,13 @@ export default function RootLayout() {
           headerBackTitle: 'Home',
         }}
       />
-    
+      <Stack.Screen 
+        name="leaderboard"
+        options={{ 
+          title: 'Leaderboard',
+          headerBackTitle: 'Home',
+        }}
+      />
       <Stack.Screen 
         name="contact"
         options={{ 
