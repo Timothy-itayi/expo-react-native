@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Pressable, Text, View } from 'react-native';
 import Animated, {
   Easing,
   interpolate,
@@ -12,7 +12,7 @@ import Animated, {
 import { ModalCardStyles as styles } from '../../styles/cards';
 import { BaseCardProps } from './BaseCard';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Animated.View);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedImage = Animated.createAnimatedComponent(Image);
 
 // GSAP-like spring config for a natural, bouncy feel
@@ -70,21 +70,20 @@ const ModalCard = ({ card, selectedAttribute, result, onSelectTrait }: ModalCard
     });
   };
 
-  const handlePress = (trait: 'speed' | 'power' | 'grip') => {
-    // Quick press down
+  const handlePressIn = (trait: 'speed' | 'power' | 'grip') => {
+    // Quick press down animation
     pressedValues[trait].value = withTiming(0, {
       duration: 100,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
     });
+  };
 
+  const handlePressOut = (trait: 'speed' | 'power' | 'grip') => {
     // Bounce back with spring
-    setTimeout(() => {
-      pressedValues[trait].value = withSequence(
-        withSpring(1.05, springConfig),
-        withSpring(1, springConfig)
-      );
-    }, 100);
-
+    pressedValues[trait].value = withSequence(
+      withSpring(1.05, springConfig),
+      withSpring(1, springConfig)
+    );
     onSelectTrait?.(trait);
   };
 
@@ -109,7 +108,8 @@ const ModalCard = ({ card, selectedAttribute, result, onSelectTrait }: ModalCard
         getHighlightStyle(trait),
         createAnimatedStyle(trait),
       ]}
-      onTouchStart={() => handlePress(trait)}
+      onPressIn={() => handlePressIn(trait)}
+      onPressOut={() => handlePressOut(trait)}
     >
       <Text style={styles.traitLabel}>{label}</Text>
       <Text style={styles.traitValue}>{value}</Text>

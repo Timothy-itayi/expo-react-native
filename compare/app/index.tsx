@@ -1,12 +1,17 @@
 
 import { Link } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}></Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleMain}>Compare</Text>
+        <Text style={styles.titleSub}>card game</Text>
+      </View>
       <View style={styles.buttonContainer}>
         <Link href="/game" asChild>
           <TouchableOpacity style={styles.button}>
@@ -28,28 +33,51 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    color: '#333',
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  titleMain: {
+    fontSize: 48,
+    fontWeight: '700',
+    color: '#000000',
+    letterSpacing: -1,
+  },
+  titleSub: {
+    fontSize: 18,
+    color: '#666666',
+    marginTop: 4,
+    letterSpacing: 4,
+    textTransform: 'uppercase',
   },
   buttonContainer: {
-    width: '80%',
-    gap: 20,
+    width: width * 0.85,
+    gap: 16,
   },
   button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: 'transparent',
+    padding: 16,
     width: '100%',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#000000',
+    borderRadius: 0,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
+    color: '#000000',
+    fontSize: 20,
     fontWeight: '600',
+    letterSpacing: 1,
+  },
+  secondaryButton: {
+    borderColor: '#666666',
+    borderWidth: 1,
+  },
+  secondaryButtonText: {
+    color: '#666666',
+    fontWeight: '500',
   },
 });
