@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LeaderboardService } from '../../services/leaderboardService';
 import { BattleResult, BattleReward, GameStats } from '../../types/rewards';
 import { RewardFactory } from './rewardFactory';
 
@@ -70,8 +71,13 @@ export class RewardManager {
       newStats: this.stats
     });
 
-    // Save to storage
+    // Save to local storage
     await this.saveStats();
+    
+    // Sync to leaderboard (non-blocking)
+    LeaderboardService.updateUserStats(this.stats).catch(error => {
+      console.error('Failed to sync to leaderboard:', error);
+    });
     
     return rewards;
   }
@@ -94,6 +100,49 @@ export class RewardManager {
     };
     
     await this.saveStats();
+    
+    // Reset both local and server stats
+    try {
+      await LeaderboardService.resetUserStats();
+      this.logDebug('Stats reset completed (local and server)');
+    } catch (error) {
+      console.error('Failed to reset server stats:', error);
+      this.logDebug('Only local stats were reset');
+    }
+  }
+
+  // Force reset both local and server stats
+  static async forceReset(): Promise<void> {
+    this.logDebug('Force resetting all stats');
+    
+    // Reset local storage
+    await AsyncStorage.removeItem(this.STATS_KEY);
+    
+    // Reset initialization flag
+    this.isInitialized = false;
+    
+    // Reset stats object
+    this.stats = {
+      totalGames: 0,
+      totalWins: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      totalPoints: 0,
+      perfectWins: 0,
+      comebackWins: 0
+    };
+    
+    // Reset server stats
+    try {
+      await LeaderboardService.resetUserStats();
+      this.logDebug('Force reset completed (local and server)');
+    } catch (error) {
+      console.error('Failed to reset server stats:', error);
+      this.logDebug('Only local stats were force reset');
+    }
+    
+    // Reinitialize
+    await this.initialize();
   }
 
   private static async saveStats(): Promise<void> {

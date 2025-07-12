@@ -18,13 +18,18 @@ export default function HomeScreen() {
             <Text style={styles.buttonText}>Start Game</Text>
           </TouchableOpacity>
         </Link>
-      
-        <Link href="/contact" asChild>
+
+        <Link href="/leaderboard" asChild>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Contact</Text>
+            <Text style={[styles.buttonText, styles.secondaryButtonText]}>Leaderboard</Text>
           </TouchableOpacity>
         </Link>
       
+        <Link href="/contact" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={[styles.buttonText, styles.secondaryButtonText]}>Contact</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </View>
   );

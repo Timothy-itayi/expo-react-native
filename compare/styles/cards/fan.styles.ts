@@ -7,7 +7,7 @@ export const FanCardStyles = StyleSheet.create({
   card: {
     width: screenWidth * 0.38, // Increased from 0.32 for better readability
     aspectRatio: 1/FAN_CARD_RATIO,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#000000',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#000000',
