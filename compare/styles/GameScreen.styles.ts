@@ -248,4 +248,32 @@ export const GameScreenStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
+
+  // New styles for points and rewards
+  pointsText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
+    marginTop: 8
+  },
+  rewardsContainer: {
+    marginVertical: 16,
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8
+  },
+  rewardsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 8,
+    textAlign: 'center'
+  },
+  rewardText: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    marginVertical: 4
+  }
 });

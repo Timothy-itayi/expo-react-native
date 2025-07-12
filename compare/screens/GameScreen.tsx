@@ -10,7 +10,10 @@ import Animated, {
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';
 import { CardFactory, CardManager, CardType } from '../data/cards';
+import { BattleTracker } from '../data/game/battleTracker';
+import { RewardManager } from '../data/rewards/rewardManager';
 import { GameScreenStyles as styles } from "../styles/GameScreen.styles";
+import { BattleReward } from '../types/rewards';
 
 type Attribute = 'speed' | 'power' | 'grip';
 
@@ -23,10 +26,12 @@ interface RoundResult {
 
 const ScoreBoard = ({ 
   playerScore, 
-  cpuScore 
+  cpuScore,
+  totalPoints
 }: { 
   playerScore: number; 
-  cpuScore: number; 
+  cpuScore: number;
+  totalPoints: number;
 }) => {
   return (
     <Animated.View 
@@ -44,6 +49,7 @@ const ScoreBoard = ({
           <Text style={styles.scoreValue}>{cpuScore}</Text>
         </View>
       </View>
+      <Text style={styles.pointsText}>Total Points: {totalPoints}</Text>
     </Animated.View>
   );
 };
@@ -55,30 +61,56 @@ const GameScreen = () => {
   const [playerWins, setPlayerWins] = useState<CardType[]>([]);
   const [cpuWins, setCpuWins] = useState<CardType[]>([]);
   const [currentRound, setCurrentRound] = useState<RoundResult | null>(null);
+  const [battleTracker] = useState(() => new BattleTracker());
+  const [rewards, setRewards] = useState<BattleReward[]>([]);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [currentScore, setCurrentScore] = useState({ player: 0, cpu: 0 });
 
   const isGameOver = playerHand.length === 0;
 
   useEffect(() => {
     const initializeGame = async () => {
+      // Initialize reward manager
+      await RewardManager.initialize();
+      const stats = RewardManager.getStats();
+      setTotalPoints(stats.totalPoints);
+      
       // Force reset card storage and regenerate cards
       await CardManager.forceReset();
       
-      // Get 10 unique cards (5 for player, 5 for CPU)
+      // Get 6 unique cards (3 for player, 3 for CPU)
       const gameCards = CardFactory.createCardSet(6);
       console.log('🎮 Initializing game with unique cards:', 
         gameCards.map(card => `${card.name}(${card.id})`).join(', ')
       );
       
       setDeck(gameCards);
-      setPlayerHand(gameCards.slice(0, 3)); // Increased to 5 cards
-      setCpuHand(gameCards.slice(3, 6));   // Increased to 5 cards4
+      setPlayerHand(gameCards.slice(0, 3));
+      setCpuHand(gameCards.slice(3, 6));
       setPlayerWins([]);
       setCpuWins([]);
       setCurrentRound(null);
+      setRewards([]);
+      setCurrentScore({ player: 0, cpu: 0 });
+      
+      // Start new battle tracking
+      battleTracker.startNewBattle();
     };
 
     initializeGame();
   }, []);
+
+  const updateScore = () => {
+    const state = battleTracker.getCurrentState();
+    setCurrentScore({
+      player: state.cpuCardLosses, // When CPU loses, player wins
+      cpu: state.playerCardLosses  // When player loses, CPU wins
+    });
+    console.log('📊 Score updated:', {
+      player: state.cpuCardLosses,
+      cpu: state.playerCardLosses
+    });
+  };
 
   const handleAttributeSelect = (attr: Attribute) => {
     const playerCard = playerHand[0];
@@ -92,6 +124,12 @@ const GameScreen = () => {
     if (playerValue > cpuValue) result = 'Player';
     else if (cpuValue > playerValue) result = 'CPU';
 
+    const roundResult = { playerCard, cpuCard, result, attribute: attr };
+    
+    // Record the round
+    battleTracker.recordRound(roundResult);
+    updateScore(); // Update score after recording the round
+
     if (result === 'Player') {
       setPlayerWins([...playerWins, playerCard, cpuCard]);
     } else if (result === 'CPU') {
@@ -100,33 +138,57 @@ const GameScreen = () => {
 
     setPlayerHand(playerHand.slice(1));
     setCpuHand(cpuHand.slice(1));
-    setCurrentRound({ playerCard, cpuCard, result, attribute: attr });
+    setCurrentRound(roundResult);
+
+    // Check if game is over after this move
+    if (playerHand.length <= 1) {
+      handleGameOver();
+    }
+  };
+
+  const handleGameOver = async () => {
+    const battleResult = battleTracker.getBattleResult();
+    const newRewards = await RewardManager.processBattleResult(battleResult);
+    setRewards(newRewards);
+    
+    // Update total points
+    const stats = RewardManager.getStats();
+    setTotalPoints(stats.totalPoints);
+    
+    // Reset tracker for next game
+    battleTracker.startNewBattle();
   };
 
   const resetGame = async () => {
-    // Get 10 new unique cards
-    const newGameCards = CardFactory.createCardSet(10);
+    // Get 6 new unique cards
+    const newGameCards = CardFactory.createCardSet(6);
     console.log('🔄 Resetting game with new unique cards:', 
       newGameCards.map(card => `${card.name}(${card.id})`).join(', ')
     );
     
     setDeck(newGameCards);
-    setPlayerHand(newGameCards.slice(0, 3)); // Increased to 5 cards
-    setCpuHand(newGameCards.slice(3, 6));   // Increased to 5 cards
+    setPlayerHand(newGameCards.slice(0, 3));
+    setCpuHand(newGameCards.slice(3, 6));
     setPlayerWins([]);
     setCpuWins([]);
     setCurrentRound(null);
+    setRewards([]);
+    setCurrentScore({ player: 0, cpu: 0 });
+    
+    // Start new battle tracking
+    battleTracker.startNewBattle();
   };
 
   return (
     <View style={styles.container}>
       {/* Scoreboard */}
       <ScoreBoard 
-        playerScore={playerHand.length + playerWins.length}
-        cpuScore={cpuHand.length + cpuWins.length}
+        playerScore={currentScore.player}
+        cpuScore={currentScore.cpu}
+        totalPoints={totalPoints}
       />
 
-      {/* Battle Zone */}
+      {/* Rest of the component remains the same */}
       <View style={styles.battleSection}>
         <Text style={styles.battleTitle}>Battle Zone</Text>
 
@@ -194,19 +256,32 @@ const GameScreen = () => {
         )}
       </View>
 
-      {/* Game Over Overlay - Moved outside battle section */}
+      {/* Game Over Overlay */}
       {isGameOver && (
         <View style={styles.battleOverlay}>
           <View style={styles.battleOverlayContent}>
             <Text style={styles.winnerText}>
-              {playerWins.length > cpuWins.length ? (
+              {currentScore.player > currentScore.cpu ? (
                 'You Win!'
-              ) : playerWins.length < cpuWins.length ? (
+              ) : currentScore.player < currentScore.cpu ? (
                 'CPU Wins!'
               ) : (
                 "It's a Draw!"
               )}
             </Text>
+            
+            {/* Display Rewards */}
+            {rewards.length > 0 && (
+              <View style={styles.rewardsContainer}>
+                <Text style={styles.rewardsTitle}>Rewards Earned:</Text>
+                {rewards.map((reward, index) => (
+                  <Text key={index} style={styles.rewardText}>
+                    {reward.description}: +{reward.amount} points
+                  </Text>
+                ))}
+              </View>
+            )}
+
             <Pressable 
               style={({ pressed }) => [
                 styles.playAgainButton,
