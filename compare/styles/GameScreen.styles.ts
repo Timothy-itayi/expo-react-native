@@ -90,6 +90,7 @@ export const GameScreenStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
+    position: 'relative', // Add this to create stacking context
   },
 
   battleTitle: {
@@ -106,6 +107,7 @@ export const GameScreenStyles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 10,
     gap: 20, // Space between cards
+    zIndex: 1, // Add this to ensure proper stacking
   },
 
   cardLabel: {
@@ -187,5 +189,63 @@ export const GameScreenStyles = StyleSheet.create({
     color: '#333333',
     marginBottom: 16,
     textAlign: 'center',
+  },
+
+  // Battle Overlay Styles
+  battleOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,
+    elevation: 9999, // High elevation for Android
+  },
+
+  battleOverlayContent: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#000000',
+    width: '80%',
+    maxWidth: 300,
+    elevation: 10000, // Even higher elevation for Android
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    zIndex: 10000, // Ensure content is above overlay
+  },
+
+  playAgainButton: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#000000',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+    
+  },
+
+  playAgainText: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });

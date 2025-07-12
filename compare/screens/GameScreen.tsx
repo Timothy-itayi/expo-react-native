@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Button,
-    Text,
-    View
+  Pressable,
+  Text,
+  View
 } from 'react-native';
 import Animated, {
-    FadeInDown,
+  FadeInDown
 } from 'react-native-reanimated';
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';
@@ -167,28 +167,43 @@ const GameScreen = () => {
       </View>
 
       {/* Player's Hand */}
-      {!isGameOver ? (
-        <View style={styles.playerSection}>
-          <Text style={styles.sectionLabel}>Your Hand</Text>
+      <View style={styles.playerSection}>
+        <Text style={styles.sectionLabel}>Your Hand</Text>
+        {!isGameOver && (
           <CardFan 
             cards={playerHand}
             onSelectAttribute={handleAttributeSelect}
           />
+        )}
+      </View>
+
+      {/* Game Over Overlay - Moved outside battle section */}
+      {isGameOver && (
+        <View style={styles.battleOverlay}>
+          <View style={styles.battleOverlayContent}>
+            <Text style={styles.winnerText}>
+              {playerWins.length > cpuWins.length ? (
+                'You Win!'
+              ) : playerWins.length < cpuWins.length ? (
+                'CPU Wins!'
+              ) : (
+                "It's a Draw!"
+              )}
+            </Text>
+            <Pressable 
+              style={({ pressed }) => [
+                styles.playAgainButton,
+                pressed && {
+                  transform: [{ scale: 0.95 }],
+                  backgroundColor: '#f5f5f5'
+                }
+              ]}
+              onPress={resetGame}
+            >
+              <Text style={styles.playAgainText}>Play Again</Text>
+            </Pressable>
+          </View>
         </View>
-      ) : (
-        <Animated.View 
-          style={styles.resultSection}
-          entering={FadeInDown.springify()}
-        >
-          <Text style={styles.winnerText}>
-            🎉 {playerWins.length > cpuWins.length
-              ? 'You Win!'
-              : playerWins.length < cpuWins.length
-              ? 'CPU Wins!'
-              : "It's a Draw!"}
-          </Text>
-          <Button title="Play Again" onPress={resetGame} />
-        </Animated.View>
       )}
     </View>
   );
