@@ -41,7 +41,6 @@ const IMAGE_MAP: { [key: string]: any } = {
 };
 
 export class CardFactory {
-  private static nextId = 1;
   private static cardTemplates: CardTemplate[] = [
     // Speed-focused cars
     {
@@ -176,26 +175,7 @@ export class CardFactory {
       category: 'speed',
       rarity: 'rare'
     },
-    {
-      name: 'Lightning',
-      baseSpeed: 93,
-      basePower: 68,
-      baseGrip: 61,
-      baseWeight: 1220,
-      imageKey: 'car13',
-      category: 'speed',
-      rarity: 'epic'
-    },
-    {
-      name: 'Shadow',
-      baseSpeed: 79,
-      basePower: 76,
-      baseGrip: 63,
-      baseWeight: 1450,
-      imageKey: 'car00', // Reusing car00 for now
-      category: 'balanced',
-      rarity: 'common'
-    }
+  
   ];
 
   static createCard(templateName: string, variations?: Partial<CardType>): CardType {
@@ -204,6 +184,9 @@ export class CardFactory {
       throw new Error(`Template "${templateName}" not found`);
     }
 
+    // Find the template's position in the array (1-based index)
+    const templateIndex = this.cardTemplates.findIndex(t => t.name === templateName) + 1;
+
     const imageRef = IMAGE_MAP[template.imageKey] || IMAGE_MAP['car00'];
     console.log(`🎴 Creating card "${templateName}" with image key: ${template.imageKey}`);
     if (imageRef === IMAGE_MAP['car00'] && template.imageKey !== 'car00') {
@@ -211,7 +194,7 @@ export class CardFactory {
     }
 
     const card: CardType = {
-      id: this.nextId++,
+      id: templateIndex, // Use template position as ID
       name: template.name,
       speed: template.baseSpeed + (variations?.speed || 0),
       power: template.basePower + (variations?.power || 0),
