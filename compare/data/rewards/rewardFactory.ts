@@ -40,7 +40,7 @@ export class RewardFactory {
 
   // Comeback bonus (winning after being down)
   static calculateComebackBonus(battleResult: BattleResult): number {
-    const bonus = battleResult.isComebackWin ? 15 : 0;
+    const bonus = battleResult.isComebackWin ? 18 : 0;
     this.logDebug(`Comeback bonus calculated: ${bonus}`, {
       isComebackWin: battleResult.isComebackWin
     });
