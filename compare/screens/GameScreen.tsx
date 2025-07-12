@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Pressable,
   Text,
   View
 } from 'react-native';
@@ -9,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { CardFan } from '../components/CardFan';
 import BattleCard from '../components/cards/BattleCard';
+import GameOverOverlay from '../components/GameOverOverlay';
 import { CardType } from '../data/cards';
 import { BattleTracker } from '../data/game/battleTracker';
 import { GameState, GameStateFactory } from '../data/game/gameStateFactory';
@@ -61,9 +61,13 @@ const GameScreen = () => {
   const [battleTracker] = useState(() => new BattleTracker());
   const [rewards, setRewards] = useState<BattleReward[]>([]);
   const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [showGameOver, setShowGameOver] = useState(false);
+  const [isTransitioningToGameOver, setIsTransitioningToGameOver] = useState(false);
 
   useEffect(() => {
     const initializeGame = async () => {
+      setShowGameOver(false);
+      setIsTransitioningToGameOver(false);
       // Reset points when entering the screen
       await GameStateFactory.resetPoints();
       
@@ -94,11 +98,14 @@ const GameScreen = () => {
     }));
   };
 
-  const handleAttributeSelect = (attr: Attribute) => {
-    const playerCard = gameState.playerHand[0];
+  const handleCardSelect = (selectedCard: CardType, attr: Attribute) => {
+    console.log('🎮 [handleCardSelect] Selected card:', `${selectedCard.name}(${selectedCard.id})`);
+    console.log('🎮 Selected attribute:', attr);
+    
     const cpuCard = gameState.cpuHand[0];
+    console.log('🎮 CPU card:', `${cpuCard.name}(${cpuCard.id})`);
 
-    const playerValue = playerCard[attr];
+    const playerValue = selectedCard[attr];
     const cpuValue = cpuCard[attr];
 
     let result: RoundResult['result'] = 'Draw';
@@ -106,7 +113,9 @@ const GameScreen = () => {
     if (playerValue > cpuValue) result = 'Player';
     else if (cpuValue > playerValue) result = 'CPU';
 
-    const roundResult = { playerCard, cpuCard, result, attribute: attr };
+    console.log(`🎮 Battle result: ${result} (${selectedCard.name}: ${playerValue} vs ${cpuCard.name}: ${cpuValue})`);
+
+    const roundResult = { playerCard: selectedCard, cpuCard, result, attribute: attr };
     
     // Record the round
     battleTracker.recordRound(roundResult);
@@ -116,23 +125,47 @@ const GameScreen = () => {
       const newState = { ...prevState };
       
       if (result === 'Player') {
-        newState.playerWins = [...prevState.playerWins, playerCard, cpuCard];
+        newState.playerWins = [...prevState.playerWins, selectedCard, cpuCard];
       } else if (result === 'CPU') {
-        newState.cpuWins = [...prevState.cpuWins, playerCard, cpuCard];
+        newState.cpuWins = [...prevState.cpuWins, selectedCard, cpuCard];
       }
 
-      newState.playerHand = prevState.playerHand.slice(1);
+      // Remove the selected card and CPU's card
+      newState.playerHand = prevState.playerHand.filter(card => card.id !== selectedCard.id);
       newState.cpuHand = prevState.cpuHand.slice(1);
+      
+      console.log('🎮 Remaining player hand:', newState.playerHand.map(card => `${card.name}(${card.id})`));
+      console.log('🎮 Remaining CPU hand:', newState.cpuHand.map(card => `${card.name}(${card.id})`));
       
       // Check if game is over
       if (newState.playerHand.length === 0) {
-        return GameStateFactory.createGameOverState(newState);
+        console.log('🎮 Game over - no cards remaining');
+        setIsTransitioningToGameOver(true);
+        // Mark the game as over but don't show overlay yet
+        setTimeout(() => {
+          setGameState(currentState => GameStateFactory.createGameOverState(currentState));
+        }, 200);
+        return newState;
       }
       
       return newState;
     });
 
     setCurrentRound(roundResult);
+  };
+
+  const handleReorderCards = (newCards: CardType[]) => {
+    console.log('🎮 [handleReorderCards] Reordering cards:', newCards.map(card => `${card.name}(${card.id})`));
+    setGameState(prevState => {
+      const newState = {
+        ...prevState,
+        playerHand: newCards
+      };
+      console.log('🎮 [handleReorderCards] New state:', {
+        player: newState.playerHand.map(card => `${card.name}(${card.id})`)
+      });
+      return newState;
+    });
   };
 
   const handleGameOver = async () => {
@@ -143,25 +176,48 @@ const GameScreen = () => {
     // Update total points
     const stats = RewardManager.getStats();
     setTotalPoints(stats.totalPoints);
+    
+    // Show the overlay after processing rewards
+    setTimeout(() => {
+      setShowGameOver(true);
+    }, 500);
   };
 
   // Watch for game over state changes
   useEffect(() => {
     if (gameState.isGameOver) {
+      console.log('🎮 [GameOver] Handling game over state');
       handleGameOver();
     }
   }, [gameState.isGameOver]);
 
   const resetGame = async () => {
+    console.log('🎮 [resetGame] Starting new game');
+    setShowGameOver(false);
+    setIsTransitioningToGameOver(false);
     const newGameState = await GameStateFactory.createNewGame();
+    console.log('🎮 [resetGame] New game cards:', {
+      player: newGameState.playerHand.map(card => `${card.name}(${card.id})`),
+      cpu: newGameState.cpuHand.map(card => `${card.name}(${card.id})`)
+    });
     setGameState(newGameState);
     setCurrentRound(null);
     setRewards([]);
     battleTracker.startNewBattle();
   };
 
+  // Add debug logging for initial game state
+  useEffect(() => {
+    console.log('🎮 [GameState] Current state:', {
+      player: gameState.playerHand.map(card => `${card.name}(${card.id})`),
+      cpu: gameState.cpuHand.map(card => `${card.name}(${card.id})`),
+      isGameStarted: gameState.isGameStarted,
+      isGameOver: gameState.isGameOver
+    });
+  }, [gameState]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { position: 'relative' }]}>
       {/* Scoreboard */}
       <ScoreBoard 
         playerScore={gameState.score.player}
@@ -170,10 +226,10 @@ const GameScreen = () => {
       />
 
       {/* Battle Section */}
-      <View style={styles.battleSection}>
+      <View style={[styles.battleSection, { zIndex: 1 }]}>
         <Text style={styles.battleTitle}>Battle Zone</Text>
 
-        {currentRound && gameState.isGameStarted ? (
+        {currentRound && (gameState.isGameStarted || isTransitioningToGameOver) ? (
           <>
             <View style={styles.battleContent}>
               {/* Player Card */}
@@ -212,14 +268,8 @@ const GameScreen = () => {
                 <Text style={styles.cardLabel}>Opponent's Card</Text>
               </View>
             </View>
-
-            {currentRound.result === 'Draw' && (
-              <Text style={[styles.resultText, { color: '#000' }]}>
-                It&apos;s a Draw!
-              </Text>
-            )}
           </>
-        ) : gameState.isGameStarted ? (
+        ) : gameState.isGameStarted && !isTransitioningToGameOver ? (
           <Text style={styles.instructions}>
             Select a card and choose a trait to start the battle!
           </Text>
@@ -227,56 +277,24 @@ const GameScreen = () => {
       </View>
 
       {/* Player's Hand */}
-      <View style={styles.playerSection}>
+      <View style={[styles.playerSection, { zIndex: 1 }]}>
         <Text style={styles.sectionLabel}>Your Hand</Text>
-        {gameState.isGameStarted && !gameState.isGameOver && (
+        {gameState.isGameStarted && !gameState.isGameOver && !isTransitioningToGameOver && (
           <CardFan 
             cards={gameState.playerHand}
-            onSelectAttribute={handleAttributeSelect}
+            onSelectCard={handleCardSelect}
           />
         )}
       </View>
 
       {/* Game Over Overlay */}
-      {gameState.isGameOver && (
-        <View style={styles.battleOverlay}>
-          <View style={styles.battleOverlayContent}>
-            <Text style={styles.winnerText}>
-              {gameState.score.player > gameState.score.cpu ? (
-                'You Win!'
-              ) : gameState.score.player < gameState.score.cpu ? (
-                'CPU Wins!'
-              ) : (
-                "It's a Draw!"
-              )}
-            </Text>
-            
-            {/* Display Rewards */}
-            {rewards.length > 0 && (
-              <View style={styles.rewardsContainer}>
-                <Text style={styles.rewardsTitle}>Rewards Earned:</Text>
-                {rewards.map((reward, index) => (
-                  <Text key={index} style={styles.rewardText}>
-                    {reward.description}: +{reward.amount} points
-                  </Text>
-                ))}
-              </View>
-            )}
-
-            <Pressable 
-              style={({ pressed }) => [
-                styles.playAgainButton,
-                pressed && {
-                  transform: [{ scale: 0.95 }],
-                  backgroundColor: '#f5f5f5'
-                }
-              ]}
-              onPress={resetGame}
-            >
-              <Text style={styles.playAgainText}>Play Again</Text>
-            </Pressable>
-          </View>
-        </View>
+      {showGameOver && gameState.isGameOver && (
+        <GameOverOverlay
+          playerScore={gameState.score.player}
+          cpuScore={gameState.score.cpu}
+          rewards={rewards}
+          onPlayAgain={resetGame}
+        />
       )}
     </View>
   );

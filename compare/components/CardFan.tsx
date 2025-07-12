@@ -6,7 +6,7 @@ import ModalCard from './cards/ModalCard';
 
 interface CardFanProps {
   cards: CardType[];
-  onSelectAttribute?: (trait: 'speed' | 'power' | 'grip') => void;
+  onSelectCard?: (card: CardType, trait: 'speed' | 'power' | 'grip') => void;
 }
 
 // Adjusted constants for better card spacing with more cards
@@ -15,15 +15,29 @@ const CARD_ROTATION = 4; // Reduced from 5 for a gentler curve
 const MAX_FAN_WIDTH = Dimensions.get('window').width * 0.85; // 85% of screen width
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
+export const CardFan = ({ cards, onSelectCard }: CardFanProps) => {
   const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
 
   const handleSelectTrait = (trait: 'speed' | 'power' | 'grip') => {
-    onSelectAttribute?.(trait);
+    if (!selectedCard) {
+      console.warn('❌ No card selected when trying to select trait');
+      return;
+    }
+    
+    console.log('🎴 [handleSelectTrait] Selected card:', `${selectedCard.name}(${selectedCard.id})`);
+    console.log(`🎴 Selected trait: ${trait}`);
+    
+    onSelectCard?.(selectedCard, trait);
     setSelectedCard(null);
   };
 
+  const handleCardSelect = (card: CardType) => {
+    console.log(`🎴 [handleCardSelect] Selected card ${card.name}(${card.id})`);
+    setSelectedCard(card);
+  };
+
   const handleCloseModal = () => {
+    console.log('🎴 [handleCloseModal] Closing modal, clearing selected card');
     setSelectedCard(null);
   };
 
@@ -53,15 +67,18 @@ export const CardFan = ({ cards, onSelectAttribute }: CardFanProps) => {
 
       // Generate a unique key using both card ID and index
       const uniqueKey = `card-${card.id}-${index}`;
-      console.log(`🎴 Rendering card with key: ${uniqueKey}`);
 
       return (
         <TouchableWithoutFeedback
           key={uniqueKey}
-          onPress={() => setSelectedCard(card)}
+          onPress={() => handleCardSelect(card)}
         >
           <View style={style}>
-            <FanCard card={card} />
+            <FanCard 
+              card={card}
+              selectedAttribute={undefined}
+              result={undefined}
+            />
           </View>
         </TouchableWithoutFeedback>
       );

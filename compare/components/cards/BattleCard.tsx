@@ -144,7 +144,7 @@ const BattleCard = ({
       <View style={styles.statsContainer}>
         {renderStat('speed', card.speed, 'speed')}
         {renderStat('power', card.power, 'power')}
-        {renderStat('weight', card.weight, 'grip')}
+        {renderStat('grip', card.weight, 'grip')}
       </View>
     </Animated.View>
   );

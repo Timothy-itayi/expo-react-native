@@ -21,13 +21,13 @@ export default function HomeScreen() {
 
         <Link href="/leaderboard" asChild>
           <TouchableOpacity style={styles.button}>
-            <Text style={[styles.buttonText, styles.secondaryButtonText]}>Leaderboard</Text>
+            <Text style={styles.buttonText}>Leaderboard</Text>
           </TouchableOpacity>
         </Link>
       
         <Link href="/contact" asChild>
           <TouchableOpacity style={styles.button}>
-            <Text style={[styles.buttonText, styles.secondaryButtonText]}>Contact</Text>
+            <Text style={styles.buttonText}>Contact</Text>
           </TouchableOpacity>
         </Link>
       </View>

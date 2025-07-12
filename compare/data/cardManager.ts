@@ -143,9 +143,6 @@ export class CardManager {
     return this.cards.filter(card => card.category === category);
   }
 
-  static getCardsByRarity(rarity: string): CardType[] {
-    return this.cards.filter(card => card.rarity === rarity);
-  }
 
   static async generateNewCards(count: number): Promise<void> {
     const newCards = CardFactory.createCardSet(count);

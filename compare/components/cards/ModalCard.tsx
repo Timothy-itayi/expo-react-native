@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Image, Pressable, Text, View } from 'react-native';
 import Animated, {
-  Easing,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-  withTiming,
+    Easing,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withSpring,
+    withTiming,
 } from 'react-native-reanimated';
 import { ModalCardStyles as styles } from '../../styles/cards';
 import { BaseCardProps } from './BaseCard';
@@ -141,7 +141,7 @@ const ModalCard = ({ card, selectedAttribute, result, onSelectTrait }: ModalCard
       <View style={styles.traitsContainer}>
         {renderTraitButton('speed', card.speed, 'speed')}
         {renderTraitButton('power', card.power, 'power')}
-        {renderTraitButton('weight', card.weight, 'grip')}
+        {renderTraitButton('grip', card.weight, 'grip')}
       </View>
     </View>
   );
