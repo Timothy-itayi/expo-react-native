@@ -31,8 +31,8 @@ export const BattleCardStyles = StyleSheet.create({
 
   cardNumberContainer: {
     position: 'absolute',
-    top: 6,
-    left: 8,
+    top: 8,
+    left: 10,
     backgroundColor: '#ff0066',
     paddingHorizontal: 8,
     paddingVertical: 4,
