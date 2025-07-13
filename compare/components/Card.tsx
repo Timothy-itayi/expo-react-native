@@ -9,9 +9,12 @@ type Props = {
   battle?: boolean;
   selectedAttribute?: 'speed' | 'power' | 'grip';
   result?: 'win' | 'lose' | 'draw';
+  select?: boolean;
+  reveal?: boolean;
+  traitSelect?: boolean; // For trait selection phase in bluff mode
 };
 
-const Card = ({ card, large = false, battle = false, selectedAttribute, result }: Props) => {
+const Card = ({ card, large = false, battle = false, selectedAttribute, result, select = false, reveal = false, traitSelect = false }: Props) => {
   const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
     if (selectedAttribute !== attr) return null;
     if (result === 'win') return styles.traitWin;
@@ -41,7 +44,10 @@ const Card = ({ card, large = false, battle = false, selectedAttribute, result }
     <View style={[
       styles.card,
       large && styles.cardLarge,
-      battle && styles.cardBattle
+      battle && styles.cardBattle,
+      select && styles.cardSelect,
+      reveal && styles.cardReveal,
+      traitSelect && styles.cardTraitSelect
     ]}>
       {/* Card Number and Name */}
       <View style={[
@@ -69,14 +75,16 @@ const Card = ({ card, large = false, battle = false, selectedAttribute, result }
       </View>
 
       {/* Stats Table */}
-      <View style={[
-        styles.statsContainer,
-        battle && styles.statsBattle
-      ]}>
-        {renderStat('Power', card.power, 'power')}
-        {renderStat('Weight', card.weight, 'grip')}
-        {renderStat('Speed', card.speed, 'speed')}
-      </View>
+      {!traitSelect && !reveal && (
+        <View style={[
+          styles.statsContainer,
+          battle && styles.statsBattle
+        ]}>
+          {renderStat('Power', card.power, 'power')}
+          {renderStat('Weight', card.weight, 'grip')}
+          {renderStat('Speed', card.speed, 'speed')}
+        </View>
+      )}
     </View>
   );
 };

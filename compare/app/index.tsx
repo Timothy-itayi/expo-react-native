@@ -13,9 +13,9 @@ export default function HomeScreen() {
         <Text style={styles.titleSub}>Card Game</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Link href="/game" asChild>
+        <Link href="/game-modes" asChild>
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Start Game</Text>
+            <Text style={styles.buttonText}>Play Game</Text>
           </TouchableOpacity>
         </Link>
 
