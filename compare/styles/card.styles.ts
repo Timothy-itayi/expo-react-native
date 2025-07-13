@@ -17,7 +17,7 @@ export const Cardstyles = StyleSheet.create({
   },
 
   cardLarge: {
-    width: screenWidth * 0.8,
+    width: screenWidth * 0.5,
   },
 
   cardBattle: {
@@ -25,10 +25,16 @@ export const Cardstyles = StyleSheet.create({
     transform: [{ rotate: '0deg' }],
   },
 
+  cardSelect: {
+    width: screenWidth * 0.25,
+    aspectRatio: 0.5,
+    height: screenWidth * 0.65,
+  },
+
   cardHeader: {
     backgroundColor: '#ffffff',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 8, // Reduce from 8 to 4
+    paddingHorizontal: 4,
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
   },
@@ -81,10 +87,12 @@ export const Cardstyles = StyleSheet.create({
 
   imageContainer: {
     width: '100%',
-    height: '50%',
+    height: '75%', // Increase this for more image space
     backgroundColor: '#f5f5f5',
     borderBottomWidth: 1,
     borderBottomColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   image: {
@@ -151,4 +159,33 @@ traitLose: {
 traitDraw: {
     backgroundColor: '#e2e3e5',
 },
+
+  cardReveal: {
+    width: screenWidth * 0.38,
+    aspectRatio: 1, // Make reveal card square for consistent image display
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#000000',
+    overflow: 'hidden',
+    marginHorizontal: 4,
+    elevation: 3,
+    marginVertical: 10, // Match cardTraitSelect for minimal bottom space
+  },
+
+  // For trait selection phase in bluff mode
+  cardTraitSelect: {
+    width: screenWidth * 0.44,
+    aspectRatio: 1,
+    
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#000000',
+    overflow: 'hidden',
+    marginHorizontal: 4,
+    marginVertical: 6,
+    
+    // marginVertical: 10, // Remove or reduce this
+  },
 });
