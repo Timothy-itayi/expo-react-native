@@ -4,6 +4,39 @@
 
 A React Native card battle game where players compete with unique car cards! ＼(≧▽≦)／
 
+## 🎮 Game Screenshots
+
+The game features several distinct screens and gameplay modes:
+
+### 📱 **Title Screen** (`title-screen.PNG`)
+- Main menu interface with game title and navigation options
+- Clean, modern design with "Compare" branding
+- Entry point to the game experience
+
+### 🎯 **Game Modes Selection** (`game-modes.PNG`)
+- Mode selection screen allowing players to choose between:
+  - **Classic Mode**: Traditional card battle gameplay
+  - **Gamble Mode**: Prediction-based card game with trait guessing
+- Intuitive interface for game mode selection
+
+### ⚔️ **Classic Gameplay** (`classic-game.PNG`, `classic-game01.PNG`)
+- Core battle mechanics in action
+- Shows card selection, trait comparison, and battle results
+- Displays player hand, CPU opponent, and scoring system
+- Real-time gameplay with interactive card fan and battle zone
+
+### 🏆 **Victory Screen** (`classic-win.PNG`)
+- Game over overlay with final results
+- Displays winner announcement and final scores
+- Shows rewards earned and "Play Again" option
+- Animated victory celebration
+
+### 📊 **Leaderboard** (`leader-board.PNG`)
+- Global leaderboard integration with Supabase
+- Shows player rankings, scores, and statistics
+- Pull-to-refresh functionality for real-time updates
+- Anonymous username system for privacy
+
 ## System Design ⚙️
 
 ### Core Architecture (⌐■_■)
