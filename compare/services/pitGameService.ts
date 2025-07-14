@@ -22,8 +22,8 @@ export class PitGameService {
 
   static createInitialState(): PitGameState {
     return {
-      playerHand: [],
-      cpuHand: [],
+      playerDeck: [],
+      cpuDeck: [],
       pit: [],
       playerScore: 0,
       cpuScore: 0,
@@ -41,15 +41,19 @@ export class PitGameService {
     };
   }
 
-  static createNewGame(playerCards: CardType[], cpuCards: CardType[]): PitGameState {
-    this.logDebug('Creating new pit game', {
-      playerCards: playerCards.map(c => c.name),
-      cpuCards: cpuCards.map(c => c.name)
+  static createNewGame(allCards: CardType[]): PitGameState {
+    this.logDebug('Creating new pit game with split decks', {
+      deckSize: allCards.length,
+      cardNames: allCards.map(c => c.name)
     });
-
+    // Shuffle and split deck
+    const shuffled = shuffleArray(allCards);
+    const half = Math.floor(shuffled.length / 2);
+    const playerDeck = shuffled.slice(0, half);
+    const cpuDeck = shuffled.slice(half);
     return {
-      playerHand: [...playerCards],
-      cpuHand: [...cpuCards],
+      playerDeck,
+      cpuDeck,
       pit: [],
       playerScore: 0,
       cpuScore: 0,
@@ -69,12 +73,19 @@ export class PitGameService {
 
   static startNewRound(currentState: PitGameState): PitGameState {
     this.logDebug('Starting new round', { roundNumber: currentState.roundNumber });
-
+    // Check if we have enough cards in both decks
+    if (currentState.playerDeck.length < 1 || currentState.cpuDeck.length < 1) {
+      return {
+        ...currentState,
+        isGameOver: true,
+        victoryCondition: 'gameOver'
+      };
+    }
     // If trait needs to be chosen, set gamePhase to 'trait-reveal' and wait for trait selection
     if (currentState.traitToChoose) {
       if (currentState.traitChooser === 'cpu') {
-        // CPU chooses the trait (best for its hand)
-        const revealedTrait = this.cpuChooseTrait(currentState.cpuHand);
+        // CPU chooses the trait (random for now)
+        const revealedTrait = this.cpuChooseTraitRandom();
         return {
           ...currentState,
           revealedTrait,
@@ -92,17 +103,16 @@ export class PitGameService {
         };
       }
     }
-
     // If trait is chosen, create a round and move to prediction phase
     if (!currentState.traitToChoose && currentState.revealedTrait) {
       const revealedTrait = currentState.revealedTrait;
       const round: PitRound = {
         revealedTrait,
         roundNumber: currentState.roundNumber,
-        playerCard: currentState.playerHand[0], // Will be updated when player selects
-        cpuCard: currentState.cpuHand[0], // Will be updated when CPU selects
-        playerPrediction: 'higher', // Will be updated when player predicts
-        cpuPrediction: 'higher', // Will be updated when CPU predicts
+        playerCard: currentState.playerDeck[0],
+        cpuCard: currentState.cpuDeck[0],
+        playerPrediction: 'higher', // Will be set by player before flip
+        cpuPrediction: 'higher', // Will be set by CPU before flip
         playerValue: 0,
         cpuValue: 0,
         playerCorrect: false,
@@ -118,105 +128,52 @@ export class PitGameService {
         gamePhase: 'prediction'
       };
     }
-
     // fallback (should not happen)
     return currentState;
   }
 
-  static makePrediction(
-    currentState: PitGameState,
-    playerPrediction: Prediction
-  ): PitGameState {
+  // Remove makePrediction, merge logic into flipCards
+
+  static flipCards(currentState: PitGameState, playerPrediction: Prediction): PitGameState {
     if (!currentState.currentRound) {
-      throw new Error('No current round to make prediction');
+      throw new Error('No current round to flip cards');
     }
-
-    this.logDebug('Making prediction', { playerPrediction });
-
-    // Generate CPU prediction
+    this.logDebug('Flipping cards from player and cpu decks');
+    // Get the top cards from each deck
+    const playerCard = currentState.playerDeck[0];
+    const cpuCard = currentState.cpuDeck[0];
+    const remainingPlayerDeck = currentState.playerDeck.slice(1);
+    const remainingCpuDeck = currentState.cpuDeck.slice(1);
+    // CPU makes its prediction randomly
     const cpuPrediction = this.generateCPUPrediction(currentState.currentRound.revealedTrait);
-
-    const updatedRound: PitRound = {
-      ...currentState.currentRound,
-      playerPrediction,
-      cpuPrediction,
-      gamePhase: 'card-selection'
-    };
-
-    return {
-      ...currentState,
-      currentRound: updatedRound,
-      gamePhase: 'card-selection'
-    };
-  }
-
-  static selectCard(
-    currentState: PitGameState,
-    playerCard: CardType
-  ): PitGameState {
-    if (!currentState.currentRound) {
-      throw new Error('No current round to select card');
-    }
-
-    this.logDebug('Selecting card', { playerCard: playerCard.name });
-
-    // Generate CPU card selection
-    const cpuCard = this.generateCPUCardSelection(currentState.cpuHand, currentState.currentRound.revealedTrait);
-
-    const updatedRound: PitRound = {
-      ...currentState.currentRound,
-      playerCard,
-      cpuCard,
-      gamePhase: 'reveal'
-    };
-
-    return {
-      ...currentState,
-      currentRound: updatedRound,
-      gamePhase: 'reveal'
-    };
-  }
-
-  static revealAndProcess(currentState: PitGameState): PitGameState {
-    if (!currentState.currentRound) {
-      throw new Error('No current round to reveal');
-    }
-
-    const round = { ...currentState.currentRound };
-    const trait = round.revealedTrait;
-
     // Get the actual values
-    const playerValue = round.playerCard[trait];
-    const cpuValue = round.cpuCard[trait];
-
+    const trait = currentState.currentRound.revealedTrait;
+    const playerValue = playerCard[trait];
+    const cpuValue = cpuCard[trait];
     // Check predictions
-    const playerCorrect = this.checkPrediction(round.playerPrediction, playerValue, cpuValue);
-    const cpuCorrect = this.checkPrediction(round.cpuPrediction, cpuValue, playerValue);
-
+    const playerCorrect = this.checkPrediction(playerPrediction, playerValue, cpuValue);
+    const cpuCorrect = this.checkPrediction(cpuPrediction, cpuValue, playerValue);
     // Determine outcomes
     const playerKeepsCard = playerCorrect;
     const cpuKeepsCard = cpuCorrect;
-
     // Cards that go to pit
     const cardsToPit: CardType[] = [];
-    if (!playerKeepsCard) cardsToPit.push(round.playerCard);
-    if (!cpuKeepsCard) cardsToPit.push(round.cpuCard);
-
+    if (!playerKeepsCard) cardsToPit.push(playerCard);
+    if (!cpuKeepsCard) cardsToPit.push(cpuCard);
     // Handle tiebreaker if both predictions are correct
     let finalPlayerKeepsCard = playerKeepsCard;
     let finalCpuKeepsCard = cpuKeepsCard;
     let finalCardsToPit = [...cardsToPit];
-
     if (playerCorrect && cpuCorrect) {
       // Tiebreaker: winner gets both cards
       if (playerValue > cpuValue) {
         finalPlayerKeepsCard = true;
         finalCpuKeepsCard = false;
-        finalCardsToPit = [round.cpuCard];
+        finalCardsToPit = [cpuCard];
       } else if (cpuValue > playerValue) {
         finalPlayerKeepsCard = false;
         finalCpuKeepsCard = true;
-        finalCardsToPit = [round.playerCard];
+        finalCardsToPit = [playerCard];
       } else {
         // Perfect tie - both keep their cards
         finalPlayerKeepsCard = true;
@@ -224,9 +181,12 @@ export class PitGameService {
         finalCardsToPit = [];
       }
     }
-
     const updatedRound: PitRound = {
-      ...round,
+      ...currentState.currentRound,
+      playerCard,
+      cpuCard,
+      playerPrediction,
+      cpuPrediction,
       playerValue,
       cpuValue,
       playerCorrect,
@@ -234,9 +194,8 @@ export class PitGameService {
       playerKeepsCard: finalPlayerKeepsCard,
       cpuKeepsCard: finalCpuKeepsCard,
       cardsToPit: finalCardsToPit,
-      gamePhase: 'result'
+      gamePhase: 'reveal'
     };
-
     this.logDebug('Round revealed', {
       trait,
       playerValue,
@@ -245,11 +204,12 @@ export class PitGameService {
       cpuCorrect,
       cardsToPit: finalCardsToPit.map(c => c.name)
     });
-
     return {
       ...currentState,
+      playerDeck: remainingPlayerDeck,
+      cpuDeck: remainingCpuDeck,
       currentRound: updatedRound,
-      gamePhase: 'result'
+      gamePhase: 'reveal'
     };
   }
 
@@ -257,82 +217,62 @@ export class PitGameService {
     if (!currentState.currentRound) {
       throw new Error('No current round to process');
     }
-
     const round = currentState.currentRound;
-    let newState = { ...currentState };
-
-    // Update hands based on who keeps their cards
-    if (!round.playerKeepsCard) {
-      newState.playerHand = newState.playerHand.filter(card => card.id !== round.playerCard.id);
-    }
-    if (!round.cpuKeepsCard) {
-      newState.cpuHand = newState.cpuHand.filter(card => card.id !== round.cpuCard.id);
-    }
-
     // Add cards to pit
-    newState.pit = [...newState.pit, ...round.cardsToPit];
-
-    if (round.cardsToPit.length > 0) {
-      // Shuffle the pit
-      newState.pit = shuffleArray(newState.pit);
-    }
-
+    const newPit = [...currentState.pit, ...round.cardsToPit];
+    // Update scores
+    let newPlayerScore = currentState.playerScore;
+    let newCpuScore = currentState.cpuScore;
+    if (round.playerKeepsCard) newPlayerScore += 1;
+    if (round.cpuKeepsCard) newCpuScore += 1;
+    // Prepare for next round
+    const nextRoundNumber = currentState.roundNumber + 1;
+    const nextTraitChooser = currentState.traitChooser === 'player' ? 'cpu' : 'player';
     // Check victory conditions
-    const victoryCondition = this.checkVictoryConditions(newState);
-    if (victoryCondition) {
-      newState.victoryCondition = victoryCondition;
-      newState.isGameOver = true;
-      newState.isGameStarted = false;
-    } else {
-      // Prepare for next round
-      newState.roundNumber += 1;
-      newState.currentTraitIndex = (newState.currentTraitIndex + 1) % newState.traitCycle.length;
-      newState.traitChooser = newState.traitChooser === 'cpu' ? 'player' : 'cpu';
-      newState.traitToChoose = true;
-      newState.revealedTrait = undefined;
-    }
-
-    // Clear current round
-    newState.currentRound = null;
-
-    this.logDebug('Round processed', {
-      playerHandSize: newState.playerHand.length,
-      cpuHandSize: newState.cpuHand.length,
-      pitSize: newState.pit.length,
-      victoryCondition: newState.victoryCondition
+    const victoryCondition = this.checkVictoryConditions({
+      ...currentState,
+      pit: newPit,
+      playerScore: newPlayerScore,
+      cpuScore: newCpuScore,
+      roundNumber: nextRoundNumber
     });
-
+    const newState: PitGameState = {
+      ...currentState,
+      pit: newPit,
+      playerScore: newPlayerScore,
+      cpuScore: newCpuScore,
+      roundNumber: nextRoundNumber,
+      traitChooser: nextTraitChooser,
+      traitToChoose: true,
+      currentRound: null,
+      gamePhase: 'trait-reveal',
+      isGameOver: victoryCondition !== null,
+      victoryCondition,
+      playerDeck: currentState.playerDeck,
+      cpuDeck: currentState.cpuDeck
+    };
+    this.logDebug('Round processed', {
+      playerScore: newPlayerScore,
+      cpuScore: newCpuScore,
+      cardsToPit: round.cardsToPit.map(c => c.name),
+      nextTraitChooser,
+      victoryCondition
+    });
     return newState;
   }
 
   private static getTraitForRound(state: PitGameState): Trait {
-    if (this.config.traitCycleMode === 'random') {
-      const traits: Trait[] = ['speed', 'power', 'grip', 'weight'];
-      return traits[Math.floor(Math.random() * traits.length)];
-    } else {
-      // Cycle through traits
-      return state.traitCycle[state.currentTraitIndex];
-    }
+    return state.traitCycle[state.currentTraitIndex % state.traitCycle.length];
   }
 
   private static generateCPUPrediction(trait: Trait): Prediction {
-    // Simple AI: randomly choose higher or lower
+    // Simple random prediction for now
     return Math.random() > 0.5 ? 'higher' : 'lower';
   }
 
-  private static generateCPUCardSelection(cpuHand: CardType[], trait: Trait): CardType {
-    // Simple AI: choose the card with the highest value for the revealed trait
-    let bestCard = cpuHand[0];
-    let bestValue = bestCard[trait];
-
-    for (const card of cpuHand) {
-      if (card[trait] > bestValue) {
-        bestValue = card[trait];
-        bestCard = card;
-      }
-    }
-
-    return bestCard;
+  private static cpuChooseTraitRandom(): Trait {
+    const traits: Trait[] = ['speed', 'power', 'grip', 'weight'];
+    return traits[Math.floor(Math.random() * traits.length)];
   }
 
   private static checkPrediction(prediction: Prediction, ownValue: number, opponentValue: number): boolean {
@@ -344,21 +284,12 @@ export class PitGameService {
   }
 
   private static checkVictoryConditions(state: PitGameState): VictoryCondition | null {
-    // Card collection victory
-    if (state.cpuHand.length === 0 && state.playerHand.length > 0) {
-      return 'cardCollection';
-    }
-
-    // Survival victory (last player with cards)
-    if (state.playerHand.length === 0 && state.cpuHand.length > 0) {
-      return 'survival';
-    }
-
-    // Game over: both hands empty (all cards in pit)
-    if (state.playerHand.length === 0 && state.cpuHand.length === 0) {
+    // Game over if deck is empty
+    if (state.playerDeck.length === 0 && state.cpuDeck.length === 0) {
       return 'gameOver';
     }
-
+    
+    // Could add more victory conditions here
     return null;
   }
 
@@ -370,39 +301,39 @@ export class PitGameService {
     this.config = { ...this.config, ...newConfig };
   }
 
-  // Player selects trait (when it's their turn)
   static selectPlayerTrait(currentState: PitGameState, trait: Trait): PitGameState {
+    this.logDebug('Player selected trait', { trait });
+    
     return {
       ...currentState,
       revealedTrait: trait,
       traitToChoose: false,
-      gamePhase: 'prediction',
-      currentRound: null
+      gamePhase: 'prediction'
     };
   }
 
-  // CPU chooses the trait that is best for its hand
   private static cpuChooseTrait(cpuHand: CardType[]): Trait {
-    // Find the trait with the highest max value in CPU's hand
+    // This method is no longer used since we don't have hands
+    // Keeping for backward compatibility but it's deprecated
     const traits: Trait[] = ['speed', 'power', 'grip', 'weight'];
-    let bestTrait: Trait = traits[0];
-    let bestValue = -Infinity;
-    for (const trait of traits) {
-      const maxValue = Math.max(...cpuHand.map(card => card[trait]));
-      if (maxValue > bestValue) {
-        bestValue = maxValue;
-        bestTrait = trait;
-      }
-    }
-    return bestTrait;
+    return traits[Math.floor(Math.random() * traits.length)];
   }
 }
 
 function shuffleArray<T>(array: T[]): T[] {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
-  return arr;
+  return shuffled;
+} 
+
+export function advanceToPredictionIfCpuChooser(state: PitGameState) {
+  let newState = state;
+  // If CPU is the trait chooser and traitToChoose is false and currentRound is null, start the round
+  if (newState.traitChooser === 'cpu' && !newState.traitToChoose && !newState.currentRound) {
+    newState = PitGameService.startNewRound(newState);
+  }
+  return newState;
 } 
