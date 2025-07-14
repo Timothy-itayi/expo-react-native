@@ -7,15 +7,17 @@ type Props = {
   card: CardType;
   large?: boolean;
   battle?: boolean;
-  selectedAttribute?: 'speed' | 'power' | 'grip';
+  selectedAttribute?: 'speed' | 'power' | 'grip' | 'weight';
   result?: 'win' | 'lose' | 'draw';
   select?: boolean;
   reveal?: boolean;
   traitSelect?: boolean; // For trait selection phase in bluff mode
+  highlightTrait?: 'speed' | 'power' | 'grip' | 'weight';
 };
 
-const Card = ({ card, large = false, battle = false, selectedAttribute, result, select = false, reveal = false, traitSelect = false }: Props) => {
-  const getHighlightStyle = (attr: 'speed' | 'power' | 'grip') => {
+const Card = ({ card, large = false, battle = false, selectedAttribute, result, select = false, reveal = false, traitSelect = false, highlightTrait }: Props) => {
+  const getHighlightStyle = (attr: 'speed' | 'power' | 'grip' | 'weight') => {
+    if (highlightTrait && highlightTrait === attr) return { backgroundColor: '#e0f7fa' };
     if (selectedAttribute !== attr) return null;
     if (result === 'win') return styles.traitWin;
     if (result === 'lose') return styles.traitLose;
@@ -23,7 +25,7 @@ const Card = ({ card, large = false, battle = false, selectedAttribute, result, 
     return null;
   };
 
-  const renderStat = (label: string, value: number, attr: 'speed' | 'power' | 'grip') => (
+  const renderStat = (label: string, value: number, attr: 'speed' | 'power' | 'grip' | 'weight') => (
     <View style={[
       styles.statRow,
       battle && styles.statRowBattle,
@@ -81,8 +83,9 @@ const Card = ({ card, large = false, battle = false, selectedAttribute, result, 
           battle && styles.statsBattle
         ]}>
           {renderStat('Power', card.power, 'power')}
-          {renderStat('Weight', card.weight, 'grip')}
+          {renderStat('Weight', card.weight, 'weight')}
           {renderStat('Speed', card.speed, 'speed')}
+          {renderStat('Grip', card.grip, 'grip')}
         </View>
       )}
     </View>

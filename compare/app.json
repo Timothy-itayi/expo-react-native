@@ -4,7 +4,7 @@
     "slug": "compare",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app-icon.png",
+    "icon": "./card-games.png",
     "scheme": "compare",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

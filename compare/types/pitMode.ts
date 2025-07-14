@@ -27,13 +27,13 @@ export interface PitRound {
   cpuKeepsCard: boolean;
   
   // Game state
-  gamePhase: 'trait-reveal' | 'prediction' | 'card-selection' | 'reveal' | 'result';
+  gamePhase: 'trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
 }
 
 export interface PitGameState {
-  // Core game state
-  playerHand: CardType[];
-  cpuHand: CardType[];
+  // Core game state - split decks
+  playerDeck: CardType[];
+  cpuDeck: CardType[];
   pit: CardType[]; // Cards that go to pit when predictions are wrong
   
   // Scoring
@@ -46,7 +46,7 @@ export interface PitGameState {
   roundNumber: number;
   
   // Game flow
-  gamePhase: 'selection' | 'trait-reveal' | 'prediction' | 'card-selection' | 'reveal' | 'result';
+  gamePhase: 'selection' | 'trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
   isGameStarted: boolean;
   isGameOver: boolean;
   
