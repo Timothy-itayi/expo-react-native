@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { CardType } from '../../data/cards';
-import { Trait } from '../../types/pitMode';
+import { Trait } from '../../types/gambleMode';
 import Card from '../Card';
 
 interface TraitSelectionPhaseProps {

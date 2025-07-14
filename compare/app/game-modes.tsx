@@ -6,11 +6,11 @@ import GameModeSelector from '../components/GameModeSelector';
 export default function GameModesScreen() {
   const router = useRouter();
 
-  const handleModeSelection = (mode: 'classic' | 'bluff') => {
+  const handleModeSelection = (mode: 'classic' | 'gamble-mode') => {
     if (mode === 'classic') {
       router.push('/game');
-    } else if (mode === 'bluff') {
-      router.push('/pit-game');
+    } else if (mode === 'gamble-mode') {
+      router.push('/gamble-mode');
     }
   };
 

@@ -4,7 +4,7 @@ export type Trait = 'speed' | 'power' | 'grip' | 'weight';
 
 export type Prediction = 'higher' | 'lower';
 
-export interface PitRound {
+export interface GambleRound {
   // Round setup
   revealedTrait: Trait;
   roundNumber: number;
@@ -27,14 +27,14 @@ export interface PitRound {
   cpuKeepsCard: boolean;
   
   // Game state
-  gamePhase: 'trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
+  gamePhase: 'trait-reveal' | 'cpu-trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
 }
 
-export interface PitGameState {
+export interface GambleGameState {
   // Core game state - split decks
   playerDeck: CardType[];
   cpuDeck: CardType[];
-  pit: CardType[]; // Cards that go to pit when predictions are wrong
+  pit: CardType[]; // Will remain empty in Gamble mode
   
   // Scoring
   playerScore: number;
@@ -42,11 +42,11 @@ export interface PitGameState {
   totalPoints: number;
   
   // Round state
-  currentRound: PitRound | null;
+  currentRound: GambleRound | null;
   roundNumber: number;
   
   // Game flow
-  gamePhase: 'selection' | 'trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
+  gamePhase: 'selection' | 'trait-reveal' | 'cpu-trait-reveal' | 'prediction' | 'card-flip' | 'reveal' | 'result';
   isGameStarted: boolean;
   isGameOver: boolean;
   
@@ -63,7 +63,7 @@ export interface PitGameState {
   revealedTrait?: Trait;
 }
 
-export interface PitGameConfig {
+export interface GambleGameConfig {
   startingCards: number;
   traitMatchBonus: number;
   pitPenalty: number;
