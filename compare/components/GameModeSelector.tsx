@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 interface GameModeSelectorProps {
-  onSelectMode: (mode: 'classic' | 'bluff') => void;
+  onSelectMode: (mode: 'classic' | 'gamble-mode') => void;
 }
 
 const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onSelectMode }) => {
@@ -72,7 +72,7 @@ const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onSelectMode }) => 
       {/* Bluff Mode */}
       <Animated.View entering={FadeInUp.delay(400)}>
         <TouchableOpacity
-          onPress={() => onSelectMode('bluff')}
+          onPress={() => onSelectMode('gamble-mode')}
           style={{
             backgroundColor: 'transparent',
             paddingHorizontal: 40,
@@ -93,7 +93,7 @@ const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onSelectMode }) => 
             marginBottom: 10,
             letterSpacing: 1
           }}>
-            Pit Mode
+            Gamble Mode
           </Text>
           <Text style={{
             fontSize: 14,
@@ -102,8 +102,7 @@ const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onSelectMode }) => 
             lineHeight: 20,
             fontWeight: '500'
           }}>
-            Match traits to battle, or lose{'\n'}
-            cards to the pit forever
+            Predict whether or not the value of a trait will be higher or lower than your opponent's
           </Text>
         </TouchableOpacity>
       </Animated.View>

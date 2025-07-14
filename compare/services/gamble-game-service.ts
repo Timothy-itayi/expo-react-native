@@ -1,15 +1,15 @@
 import { CardType } from '../data/cards';
 import { 
-  PitGameState, 
-  PitRound, 
+  GambleGameState, 
+  GambleRound, 
   Trait, 
-  PitGameConfig,
+  GambleGameConfig,
   VictoryCondition,
   Prediction
-} from '../types/pitMode';
+} from '../types/gambleMode';
 
-export class PitGameService {
-  private static config: PitGameConfig = {
+export class GambleGameService {
+  private static config: GambleGameConfig = {
     startingCards: 3,
     traitMatchBonus: 1,
     pitPenalty: 0,
@@ -17,14 +17,14 @@ export class PitGameService {
   };
 
   private static logDebug(message: string, data?: any) {
-    console.log(`🕳️ [PitGameService] ${message}`, data ? data : '');
+    console.log(`🕳️ [GambleGameService] ${message}`, data ? data : '');
   }
 
-  static createInitialState(): PitGameState {
+  static createInitialState(): GambleGameState {
     return {
       playerDeck: [],
       cpuDeck: [],
-      pit: [],
+      pit: [], // Will remain empty in Gamble mode
       playerScore: 0,
       cpuScore: 0,
       totalPoints: 0,
@@ -41,8 +41,8 @@ export class PitGameService {
     };
   }
 
-  static createNewGame(allCards: CardType[]): PitGameState {
-    this.logDebug('Creating new pit game with split decks', {
+  static createNewGame(allCards: CardType[]): GambleGameState {
+    this.logDebug('Creating new gamble game with split decks', {
       deckSize: allCards.length,
       cardNames: allCards.map(c => c.name)
     });
@@ -71,7 +71,7 @@ export class PitGameService {
     };
   }
 
-  static startNewRound(currentState: PitGameState): PitGameState {
+  static startNewRound(currentState: GambleGameState): GambleGameState {
     this.logDebug('Starting new round', { roundNumber: currentState.roundNumber });
     // Check if we have enough cards in both decks
     if (currentState.playerDeck.length < 1 || currentState.cpuDeck.length < 1) {
@@ -81,17 +81,33 @@ export class PitGameService {
         victoryCondition: 'gameOver'
       };
     }
-    // If trait needs to be chosen, set gamePhase to 'trait-reveal' and wait for trait selection
+    // If trait needs to be chosen, handle it automatically
     if (currentState.traitToChoose) {
       if (currentState.traitChooser === 'cpu') {
-        // CPU chooses the trait (random for now)
+        // CPU chooses the trait and immediately creates the round
         const revealedTrait = this.cpuChooseTraitRandom();
+        const round: GambleRound = {
+          revealedTrait,
+          roundNumber: currentState.roundNumber,
+          playerCard: currentState.playerDeck[0],
+          cpuCard: currentState.cpuDeck[0],
+          playerPrediction: 'higher', // Will be set by player before flip
+          cpuPrediction: 'higher', // Will be set by CPU before flip
+          playerValue: 0,
+          cpuValue: 0,
+          playerCorrect: false,
+          cpuCorrect: false,
+          cardsToPit: [],
+          playerKeepsCard: false,
+          cpuKeepsCard: false,
+          gamePhase: 'prediction'
+        };
         return {
           ...currentState,
           revealedTrait,
           traitToChoose: false,
-          gamePhase: 'prediction',
-          currentRound: null
+          currentRound: round,
+          gamePhase: 'prediction'
         };
       } else {
         // Player needs to choose the trait; wait for UI to call selectPlayerTrait
@@ -106,7 +122,7 @@ export class PitGameService {
     // If trait is chosen, create a round and move to prediction phase
     if (!currentState.traitToChoose && currentState.revealedTrait) {
       const revealedTrait = currentState.revealedTrait;
-      const round: PitRound = {
+      const round: GambleRound = {
         revealedTrait,
         roundNumber: currentState.roundNumber,
         playerCard: currentState.playerDeck[0],
@@ -134,7 +150,7 @@ export class PitGameService {
 
   // Remove makePrediction, merge logic into flipCards
 
-  static flipCards(currentState: PitGameState, playerPrediction: Prediction): PitGameState {
+  static flipCards(currentState: GambleGameState, playerPrediction: Prediction): GambleGameState {
     if (!currentState.currentRound) {
       throw new Error('No current round to flip cards');
     }
@@ -156,32 +172,27 @@ export class PitGameService {
     // Determine outcomes
     const playerKeepsCard = playerCorrect;
     const cpuKeepsCard = cpuCorrect;
-    // Cards that go to pit
+    // No cards go to pit in Gamble mode
     const cardsToPit: CardType[] = [];
-    if (!playerKeepsCard) cardsToPit.push(playerCard);
-    if (!cpuKeepsCard) cardsToPit.push(cpuCard);
     // Handle tiebreaker if both predictions are correct
     let finalPlayerKeepsCard = playerKeepsCard;
     let finalCpuKeepsCard = cpuKeepsCard;
-    let finalCardsToPit = [...cardsToPit];
+    let finalCardsToPit = [];
     if (playerCorrect && cpuCorrect) {
       // Tiebreaker: winner gets both cards
       if (playerValue > cpuValue) {
         finalPlayerKeepsCard = true;
         finalCpuKeepsCard = false;
-        finalCardsToPit = [cpuCard];
       } else if (cpuValue > playerValue) {
         finalPlayerKeepsCard = false;
         finalCpuKeepsCard = true;
-        finalCardsToPit = [playerCard];
       } else {
         // Perfect tie - both keep their cards
         finalPlayerKeepsCard = true;
         finalCpuKeepsCard = true;
-        finalCardsToPit = [];
       }
     }
-    const updatedRound: PitRound = {
+    const updatedRound: GambleRound = {
       ...currentState.currentRound,
       playerCard,
       cpuCard,
@@ -193,7 +204,7 @@ export class PitGameService {
       cpuCorrect,
       playerKeepsCard: finalPlayerKeepsCard,
       cpuKeepsCard: finalCpuKeepsCard,
-      cardsToPit: finalCardsToPit,
+      cardsToPit: [], // No cards to pit
       gamePhase: 'reveal'
     };
     this.logDebug('Round revealed', {
@@ -202,7 +213,7 @@ export class PitGameService {
       cpuValue,
       playerCorrect,
       cpuCorrect,
-      cardsToPit: finalCardsToPit.map(c => c.name)
+      cardsToPit: []
     });
     return {
       ...currentState,
@@ -213,13 +224,13 @@ export class PitGameService {
     };
   }
 
-  static processRoundResult(currentState: PitGameState): PitGameState {
+  static processRoundResult(currentState: GambleGameState): GambleGameState {
     if (!currentState.currentRound) {
       throw new Error('No current round to process');
     }
     const round = currentState.currentRound;
-    // Add cards to pit
-    const newPit = [...currentState.pit, ...round.cardsToPit];
+    // No cards go to pit in Gamble mode
+    const newPit = currentState.pit;
     // Update scores
     let newPlayerScore = currentState.playerScore;
     let newCpuScore = currentState.cpuScore;
@@ -236,7 +247,7 @@ export class PitGameService {
       cpuScore: newCpuScore,
       roundNumber: nextRoundNumber
     });
-    const newState: PitGameState = {
+    const newState: GambleGameState = {
       ...currentState,
       pit: newPit,
       playerScore: newPlayerScore,
@@ -254,14 +265,14 @@ export class PitGameService {
     this.logDebug('Round processed', {
       playerScore: newPlayerScore,
       cpuScore: newCpuScore,
-      cardsToPit: round.cardsToPit.map(c => c.name),
+      cardsToPit: [],
       nextTraitChooser,
       victoryCondition
     });
     return newState;
   }
 
-  private static getTraitForRound(state: PitGameState): Trait {
+  private static getTraitForRound(state: GambleGameState): Trait {
     return state.traitCycle[state.currentTraitIndex % state.traitCycle.length];
   }
 
@@ -283,7 +294,7 @@ export class PitGameService {
     }
   }
 
-  private static checkVictoryConditions(state: PitGameState): VictoryCondition | null {
+  private static checkVictoryConditions(state: GambleGameState): VictoryCondition | null {
     // Game over if deck is empty
     if (state.playerDeck.length === 0 && state.cpuDeck.length === 0) {
       return 'gameOver';
@@ -293,21 +304,40 @@ export class PitGameService {
     return null;
   }
 
-  static getGameConfig(): PitGameConfig {
+  static getGameConfig(): GambleGameConfig {
     return { ...this.config };
   }
 
-  static updateGameConfig(newConfig: Partial<PitGameConfig>): void {
+  static updateGameConfig(newConfig: Partial<GambleGameConfig>): void {
     this.config = { ...this.config, ...newConfig };
   }
 
-  static selectPlayerTrait(currentState: PitGameState, trait: Trait): PitGameState {
+  static selectPlayerTrait(currentState: GambleGameState, trait: Trait): GambleGameState {
     this.logDebug('Player selected trait', { trait });
+    
+    // Create a round immediately after player selects trait, just like CPU does
+    const round: GambleRound = {
+      revealedTrait: trait,
+      roundNumber: currentState.roundNumber,
+      playerCard: currentState.playerDeck[0],
+      cpuCard: currentState.cpuDeck[0],
+      playerPrediction: 'higher', // Will be set by player before flip
+      cpuPrediction: 'higher', // Will be set by CPU before flip
+      playerValue: 0,
+      cpuValue: 0,
+      playerCorrect: false,
+      cpuCorrect: false,
+      cardsToPit: [],
+      playerKeepsCard: false,
+      cpuKeepsCard: false,
+      gamePhase: 'prediction'
+    };
     
     return {
       ...currentState,
       revealedTrait: trait,
       traitToChoose: false,
+      currentRound: round,
       gamePhase: 'prediction'
     };
   }
@@ -327,13 +357,4 @@ function shuffleArray<T>(array: T[]): T[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
-} 
-
-export function advanceToPredictionIfCpuChooser(state: PitGameState) {
-  let newState = state;
-  // If CPU is the trait chooser and traitToChoose is false and currentRound is null, start the round
-  if (newState.traitChooser === 'cpu' && !newState.traitToChoose && !newState.currentRound) {
-    newState = PitGameService.startNewRound(newState);
-  }
-  return newState;
 } 

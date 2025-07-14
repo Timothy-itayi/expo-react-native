@@ -139,6 +139,7 @@ export const GameScreenStyles = StyleSheet.create({
   // === Trait Section ===
   traitSection: {
     paddingHorizontal: 16,
+  
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
     borderTopColor: '#000000',

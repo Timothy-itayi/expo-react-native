@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { Trait, Prediction } from '../../types/pitMode';
+import { Trait, Prediction } from '../../types/gambleMode';
 
 interface PredictionPhaseProps {
   revealedTrait: Trait;

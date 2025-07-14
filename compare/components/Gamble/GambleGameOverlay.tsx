@@ -8,9 +8,9 @@ import Animated, {
     withDelay,
     withSpring
 } from 'react-native-reanimated';
-import { VictoryCondition } from '../../types/pitMode';
+import { VictoryCondition } from '../../types/gambleMode';
 
-interface PitGameOverOverlayProps {
+interface GambleGameOverOverlayProps {
   playerScore: number;
   cpuScore: number;
   victoryCondition: VictoryCondition | null;
@@ -19,7 +19,7 @@ interface PitGameOverOverlayProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const PitGameOverOverlay: React.FC<PitGameOverOverlayProps> = ({ 
+const GambleGameOverOverlay: React.FC<GambleGameOverOverlayProps> = ({ 
   playerScore, 
   cpuScore, 
   victoryCondition,
@@ -40,32 +40,57 @@ const PitGameOverOverlay: React.FC<PitGameOverOverlayProps> = ({
   }));
 
   const getVictoryInfo = () => {
+    // Determine winner based on scores
+    const isPlayerWinner = playerScore > cpuScore;
+    const isCPUWinner = cpuScore > playerScore;
+    const isDraw = playerScore === cpuScore;
+    
     switch (victoryCondition) {
+      case 'gameOver':
+        if (isPlayerWinner) {
+          return {
+            title: 'You Win!',
+            message: 'Congratulations! You had more correct predictions than the CPU.'
+          };
+        } else if (isCPUWinner) {
+          return {
+            title: 'CPU Wins!',
+            message: 'The CPU had more correct predictions than you.'
+          };
+        } else {
+          return {
+            title: "It's a Draw!",
+            message: 'You and the CPU had the same number of correct predictions.'
+          };
+        }
       case 'cardCollection':
         return {
-          title: 'Card Collection Victory',
-          message: 'You collected all opponent cards'
-        };
-      case 'pointThreshold':
-        return {
-          title: 'Point Threshold Victory',
-          message: 'You reached the target points'
+          title: 'Card Collection Complete!',
+          message: 'You collected all the cards!'
         };
       case 'survival':
         return {
-          title: 'Survival Victory',
-          message: 'You were the last player with cards'
-        };
-      case 'gameOver':
-        return {
-          title: 'Game Over',
-          message: 'All cards have been sent to the pit. No cards remain.'
+          title: 'Survival Victory!',
+          message: 'You were the last player with cards remaining!'
         };
       default:
-        return {
-          title: 'Game Over',
-          message: 'The game has ended'
-        };
+        // Fallback based on scores
+        if (isPlayerWinner) {
+          return {
+            title: 'You Win!',
+            message: 'Congratulations! You had more correct predictions than the CPU.'
+          };
+        } else if (isCPUWinner) {
+          return {
+            title: 'CPU Wins!',
+            message: 'The CPU had more correct predictions than you.'
+          };
+        } else {
+          return {
+            title: "It's a Draw!",
+            message: 'You and the CPU had the same number of correct predictions.'
+          };
+        }
     }
   };
 
@@ -208,4 +233,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PitGameOverOverlay; 
+export default GambleGameOverOverlay; 
