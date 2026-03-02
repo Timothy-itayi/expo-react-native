@@ -17,6 +17,15 @@ const IMAGE_MAP: { [key: string]: any } = {
   'car11': require('../assets/images/cars/car11.jpg'),
   'car12': require('../assets/images/cars/car12.jpg'),
   'car13': require('../assets/images/cars/car13.jpg'),
+  'car14': require('../assets/images/cars/car14.jpg'),
+  'car15': require('../assets/images/cars/car15.jpg'),
+  'car16': require('../assets/images/cars/car16.jpg'),
+  'car17': require('../assets/images/cars/car17.jpg'),
+  'car18': require('../assets/images/cars/car18.jpg'),
+  'car19': require('../assets/images/cars/car19.jpg'),
+  'car20': require('../assets/images/cars/car20.jpg'),
+  'car21': require('../assets/images/cars/car21.jpg'),
+  'car22': require('../assets/images/cars/car22.jpg'),
 };
 
 export class CardManager {

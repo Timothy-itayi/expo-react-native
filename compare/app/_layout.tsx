@@ -28,17 +28,24 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen 
-        name="game"
+        name="game-modes"
         options={{ 
-          title: 'Game',
+          title: 'Game Modes',
           headerBackTitle: 'Home',
         }}
       />
       <Stack.Screen 
-        name="leaderboard"
+        name="game"
         options={{ 
-          title: 'Leaderboard',
-          headerBackTitle: 'Home',
+          title: 'Classic Mode',
+          headerBackTitle: 'Modes',
+        }}
+      />
+      <Stack.Screen 
+        name="gamble-mode"
+        options={{ 
+          title: 'Gamble Mode',
+          headerBackTitle: 'Modes',
         }}
       />
       <Stack.Screen 

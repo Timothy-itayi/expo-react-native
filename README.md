@@ -4,6 +4,10 @@
 
 A React Native card battle game where players compete with unique car cards! ＼(≧▽≦)／
 
+## 🎬 Demo
+
+<img src="showdown-dev-demo.gif" width="300" alt="Showdown Demo">
+
 ## 🎮 Game Screenshots
 
 The game features several distinct screens and gameplay modes:

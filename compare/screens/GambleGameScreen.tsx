@@ -138,14 +138,14 @@ const GambleGameScreen: React.FC = () => {
         
         {/* Show trait above cards during prediction phase */}
         {phase === 'prediction' && round && (
-          <View style={{ alignItems: 'center', marginBottom: 5 }}> {/* reduced from 16 */}
+          <View style={{ alignItems: 'center', marginBottom: 5 }}>
             <Text style={{ fontSize: 18, fontWeight: '600', color: '#0074d9', textAlign: 'center' }}>
               Trait: {getTraitLabel(round.revealedTrait)}
             </Text>
           </View>
         )}
         
-        <View style={[styles.battleContent, { minHeight: 100 }]}> {/* reduced from 220 */}
+        <View style={[styles.battleContent, { minHeight: 100 }]}>
           {/* Player Card or Placeholder */}
           <View style={{ alignItems: 'center' }}>
             {(phase === 'reveal' || phase === 'result') && round ? (

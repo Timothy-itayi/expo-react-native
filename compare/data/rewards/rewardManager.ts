@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LeaderboardService } from '../../services/leaderboardService';
 import { BattleResult, BattleReward, GameStats } from '../../types/rewards';
 import { RewardFactory } from './rewardFactory';
 
@@ -74,11 +73,6 @@ export class RewardManager {
     // Save to local storage
     await this.saveStats();
     
-    // Sync to leaderboard (non-blocking)
-    LeaderboardService.updateUserStats(this.stats).catch(error => {
-      console.error('Failed to sync to leaderboard:', error);
-    });
-    
     return rewards;
   }
 
@@ -100,15 +94,7 @@ export class RewardManager {
     };
     
     await this.saveStats();
-    
-    // Reset both local and server stats
-    try {
-      await LeaderboardService.resetUserStats();
-      this.logDebug('Stats reset completed (local and server)');
-    } catch (error) {
-      console.error('Failed to reset server stats:', error);
-      this.logDebug('Only local stats were reset');
-    }
+    this.logDebug('Stats reset completed (local)');
   }
 
   // Force reset both local and server stats
@@ -132,14 +118,7 @@ export class RewardManager {
       comebackWins: 0
     };
     
-    // Reset server stats
-    try {
-      await LeaderboardService.resetUserStats();
-      this.logDebug('Force reset completed (local and server)');
-    } catch (error) {
-      console.error('Failed to reset server stats:', error);
-      this.logDebug('Only local stats were force reset');
-    }
+    this.logDebug('Force reset completed (local)');
     
     // Reinitialize
     await this.initialize();
